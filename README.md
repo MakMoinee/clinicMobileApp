@@ -1,1 +1,1 @@
-# clinicMobileApp
+# saanKaPuntaApp

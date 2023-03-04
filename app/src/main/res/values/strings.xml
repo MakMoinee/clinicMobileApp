@@ -1,0 +1,148 @@
+<resources>
+    <string name="app_name">Clinic System</string>
+    <string name="action_settings">Settings</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+
+    <string name="locations_college_of_engineering_arch_and_tech">
+        - 2nd floor – Dr. Josefina Estolas Building
+    </string>
+    <string name="directions_college_of_engineering_arch_and_tech">
+        - Go to the Dr. Josefina Estolas Building\n
+        - Take the stairs to the 2 nd floor\n
+        - Turn left\n
+        - Walk Straight until the end of the floor
+    </string>
+
+    <string name="locations_cas_faculty">
+        - 2nd floor Main Academic Building
+    </string>
+    <string name="directions_cas_faculty">
+        -Go to Main Academic Building\n
+        -Take the Stairs to 2nd floor\n
+        -Go left\n
+        -Walk Straight until you end of the building\n
+        -Turn Right\n
+    </string>
+
+    <string name="locations_registrar">
+        - Ground Floor – Main Academic Building
+    </string>
+    <string name="directions_registrar">
+        - Go to the Ground Floor of Main Academic Building\n
+        - Turn right
+    </string>
+
+    <string name="locations_cashier_window">
+        - Ground Floor – Dr. Lydia M. Profeta Building
+    </string>
+    <string name="directions_cashier_window">
+        - Go to the ground floor of Dr. Lydia M. Profeta Building\n
+        - Turn right upon entering the Building
+    </string>
+    <string name="locations_college_of_education_faculty_office">
+        - 8th floor – Senator Neptali A. Gonzales Academic Hall
+    </string>
+    <string name="directions_college_of_education_faculty_office">
+        - Go to Senator Neptali A. Gonzales Academic Hall
+        - Take Elevator to the 8 th floor
+        - Turn left
+    </string>
+
+    <string name="locations_office_of_the_vice_president_of_academic_affairs">
+        - Ground Floor – Dr. Lydia M. Profeta Building
+    </string>
+    <string name="directions_office_of_the_vice_president_of_academic_affairs">
+        - Go to the ground floor of Dr. Lydia M. Profeta Building\n
+        - Turn right upon entering the Building\n
+        - Turn left\n
+        - Then turn left to reach the destination
+    </string>
+    <string-array name="search_array">
+        <item>Faculty Office of the Department of Electrical Engineering</item>
+        <item>Faculty Office of the Department of Engineering</item>
+        <item>Dean’s Office – College of Engineering, Architecture and Technology</item>
+        <item>Alumni Office</item>
+        <item>ECE Department Office</item>
+        <item>Management Information Center</item> <!-- 2nd Building -->
+        <item>Office of the Vice-President of Academic Affairs</item>
+        <item>Office of the Director of the Finance Services</item>
+        <item>Cashier Window</item>
+        <item>Cashier Staff’s Office</item>
+        <item>Office of the VPSS</item>
+        <item>VPAA Staff’s Office</item>
+        <item>Office of the VPDA</item>
+        <item>Office the President</item>
+        <item>COA</item>
+        <item>Accounting Office</item>
+        <item>Office of the Department for Administration Services</item>
+        <item>Business Affairs Office</item>
+        <item>Department of Instrumentation and Control Engineering</item>
+        <item>Scholarship &amp; Grant Office</item> <!-- 3rd building -->
+        <item>Center for Students Affairs</item>
+        <item>Registrar</item>
+        <item>DOST Office</item>
+        <item>Records Management Office</item>
+        <item>College of Arts and Sciences Faculty Office</item>
+        <item>College of Arts and Sciences Reading Center</item>
+        <item>Main Library</item> <!--4th Building Sen. Naptili -->
+        <item>Information Technology Library</item>
+        <item>Information Technology Department</item>
+        <item>Laboratory High School Faculty</item>
+        <item>College of Education Department Head Office</item>
+        <item>College of Education Faculty Office</item>
+        <item>Senior High School Faculty Office</item>
+        <item>RTU Co-Op</item> <!-- Old Building -->
+        <item>Food Kiosk</item>
+        <item>ROTC Office</item>
+        <item>Office of the Director Department of Extension Expenses</item>
+        <item>Clinic</item>
+        <item>President Emeritus Office</item> <!-- Research -->
+        <item>Bids and Awards Committee Office</item>
+        <item>Astronomy Hall</item>
+        <item>Astronomy Office</item>
+        <item>Astronomy Library</item>
+        <item>Conference Blue Room</item>
+        <item>RND Conference Room</item>
+        <item>VP Research Office</item>
+        <item>VP Research Extension Services Office</item>
+        <item>GSSAI Office</item>
+        <item>Gender and Development Office</item>
+        <item>International Relations and Grants Office</item>
+        <item>Graduate School Dean’s Office</item>
+        <item>Accreditation Room</item>
+        <item>Graduate School Library</item>
+        <item>GS Research &amp; Development Extension Services</item>
+        <item>Guidance Counseling</item>
+        <item>Institute of Human Kinetics Research Office</item>
+        <item>Institute of Human Kinetics Faculty Office</item>
+        <item>Graduate School – Information Technology Center</item>
+        <item>Office of the Director of Astronomy Research</item>
+        <item>Guidance Office</item> <!-- Wellness -->
+        <item>DRRMO Office</item>
+        <item>Counseling Office</item>
+        <item>Office of Student Affairs</item>
+        <item>Medical and Dental SVCS Center</item>
+        <item>Sports Development Wellness Center</item>
+        <item>Internal Linkages and External Affairs Center</item>
+        <item>CBET Dean’s Office</item>
+        <item>CBET Department</item>
+        <item>Guidance and Counselling Services Center</item>
+        <item>Cultural Affairs Office</item>
+        <item>RTU Himig Rizalia</item>
+        <item>Tunog Rizalia Rondalla</item>
+        <item>Badminton Court</item>
+        <item>Table Tennis Court</item>
+        <item>Board Games Court</item>
+        <item>Swimming Pool</item>
+        <item>Basketball Court</item>
+    </string-array>
+    <string name="icon_hint"><b>Icon</b></string>
+    <string name="update_username">Update username</string>
+</resources>
