@@ -1,7 +1,9 @@
 package com.sample.clinic.Common;
 
+import com.sample.clinic.Models.NearPlacesResponse;
 import com.sample.clinic.R;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +16,9 @@ public class Constants {
     public static final String postersPath = "Posters/";
     public static final String virtualGuidePath = "Virtual Guides/";
 
+    public static final String photoURL = "https://maps.googleapis.com/maps/api/place/photo";
+
+    public static List<NearPlacesResponse> nearbyHospitals = new ArrayList<>();
     public static final String getHospitalNearMeURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json";
     public static final String gmapKey = "AIzaSyB5aCq16HGA-S2uhBvYitXPuwyKNAng7Vo";
 

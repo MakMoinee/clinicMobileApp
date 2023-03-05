@@ -7,8 +7,9 @@ import lombok.Data;
 @Data
 public class NearPlacesResponse {
     String business_status;
-    List<Geometry> geometry;
+    Geometry geometry;
     String name;
     List<Photos> photos;
+    OpenHours opening_hours;
 
 }

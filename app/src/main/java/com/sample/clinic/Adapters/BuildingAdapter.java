@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.sample.clinic.Interfaces.BuildingListener;
 import com.sample.clinic.Models.Buildings;
 import com.sample.clinic.R;
+import com.sample.clinic.databinding.ItemBuildingsBinding;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
@@ -23,6 +24,8 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 public class BuildingAdapter extends RecyclerView.Adapter<BuildingAdapter.ViewHolder> {
+
+
 
     Context context;
     List<Buildings> buildingsList;

@@ -1,46 +1,62 @@
 package com.sample.clinic.Fragments;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.navigation.NavigationBarView;
 import com.sample.clinic.Adapters.BuildingAdapter;
+import com.sample.clinic.Adapters.HospitalAdapter;
 import com.sample.clinic.Common.Constants;
+import com.sample.clinic.Interfaces.AdapterListener;
 import com.sample.clinic.Interfaces.BuildingListener;
 import com.sample.clinic.Interfaces.FragmentFinish;
+import com.sample.clinic.Interfaces.LocalRequestListener;
 import com.sample.clinic.Interfaces.MainButtonsListener;
 import com.sample.clinic.Interfaces.StorageListener;
 import com.sample.clinic.Models.Buildings;
 import com.sample.clinic.Models.FullNearPlacesResponse;
 import com.sample.clinic.Models.NearPlacesRequest;
+import com.sample.clinic.Models.NearPlacesResponse;
 import com.sample.clinic.R;
 import com.sample.clinic.Services.LocalRequest;
 import com.sample.clinic.Services.Storage;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class MainFormFragment extends Fragment implements StorageListener {
 
-
+    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+    private static final int M_MAX_ENTRIES = 5;
     private Context context;
     private RecyclerView recyclerView;
     private ImageButton btnSettings, btnSearch;
@@ -58,6 +74,12 @@ public class MainFormFragment extends Fragment implements StorageListener {
     private ImageButton btnProfile;
     private MainButtonsListener mainBtnListener;
     FullNearPlacesResponse fullNearPlacesResponse;
+    Boolean locationPermissionGranted;
+
+    HospitalAdapter hAdapter;
+    LocalRequest localRequest;
+
+    LatLng currentLocation;
 
     private NavigationBarView btnBottom;
 
@@ -82,10 +104,11 @@ public class MainFormFragment extends Fragment implements StorageListener {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    storage.getBuildingsPoster();
+//                    storage.getBuildingsPoster();
                 }
             }, 50);
         }
+
     }
 
 
@@ -94,6 +117,7 @@ public class MainFormFragment extends Fragment implements StorageListener {
         View mView = LayoutInflater.from(context).inflate(R.layout.fragment_main, container, false);
         initViews(mView);
         initListeners(mView);
+        getLocationPermission();
         return mView;
     }
 
@@ -114,6 +138,7 @@ public class MainFormFragment extends Fragment implements StorageListener {
 
             }
         });
+
         btnBottom.setOnItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.action_home:
@@ -121,7 +146,7 @@ public class MainFormFragment extends Fragment implements StorageListener {
                 case R.id.action_booking:
                     mainBtnListener.onBookingClick();
                     return true;
-                case R.id. action_consult:
+                case R.id.action_consult:
                     mainBtnListener.onConsultClick();
                     break;
                 case R.id.action_settings:
@@ -130,18 +155,6 @@ public class MainFormFragment extends Fragment implements StorageListener {
             }
             return false;
         });
-//        btnProfile.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                mainBtnListener.onProfileClick();
-//            }
-//        });
-//        btnSettings.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                mainBtnListener.onNavClick();
-//            }
-//        });
     }
 
     private void loadChangeSearchValue() {
@@ -181,12 +194,7 @@ public class MainFormFragment extends Fragment implements StorageListener {
                     adapter = new BuildingAdapter(context, buildingsList, bListener);
                     recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
                     recyclerView.setAdapter(adapter);
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            recyclerView.setVisibility(View.VISIBLE);
-                        }
-                    }, 500);
+                    new Handler().postDelayed(() -> recyclerView.setVisibility(View.VISIBLE), 500);
                 }
 
                 @Override
@@ -223,12 +231,7 @@ public class MainFormFragment extends Fragment implements StorageListener {
             adapter = new BuildingAdapter(context, newBuilding, bListener);
             recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
             recyclerView.setAdapter(adapter);
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    recyclerView.setVisibility(View.VISIBLE);
-                }
-            }, 50);
+            new Handler().postDelayed(() -> recyclerView.setVisibility(View.VISIBLE), 50);
         }
 
 
@@ -242,7 +245,8 @@ public class MainFormFragment extends Fragment implements StorageListener {
         storage = new Storage(this);
         buildingFilePaths = Constants.buildingFileFolder.split(",");
         currentFileIndex = 0;
-        NearPlacesRequest req = new NearPlacesRequest();
+        localRequest = new LocalRequest(context);
+
 //        req.setLocation();
         //fullNearPlacesResponse = new LocalRequest(context).getNearbyHospitals();
 
@@ -313,4 +317,122 @@ public class MainFormFragment extends Fragment implements StorageListener {
     public void onSuccessRetrieveVideoURL(Buildings buildings) {
 
     }
+
+    private void fetchLocation() {
+
+        LocationManager lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            getLocationPermission();
+            return;
+        }
+        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                5000,
+                5000, new LocationListener() {
+                    @Override
+                    public void onLocationChanged(@NonNull Location location) {
+                        Log.e("LOCATION:", location.toString());
+                    }
+
+                    @Override
+                    public void onProviderEnabled(@NonNull String provider) {
+
+                    }
+
+                    @Override
+                    public void onProviderDisabled(@NonNull String provider) {
+
+                    }
+
+                    @Override
+                    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+                    }
+                });
+        boolean isavailable = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+        if (isavailable) {
+
+            Location loc = lm.getLastKnownLocation("gps");
+
+            if (loc != null) {
+                double latitude = loc.getLatitude();
+                double longitude = loc.getLongitude();
+                currentLocation = new LatLng(latitude, longitude);
+
+                NearPlacesRequest req = new NearPlacesRequest();
+                req.setLocation(String.format("%s,%s", currentLocation.latitude, currentLocation.longitude));
+                localRequest.getNearbyHospitals(req, new LocalRequestListener() {
+                    @Override
+                    public void onSuccess(FullNearPlacesResponse f) {
+                        fullNearPlacesResponse = f;
+                        if (f != null) {
+                            recyclerView.setAdapter(null);
+                            List<NearPlacesResponse> results = removeDuplicates(fullNearPlacesResponse.getResults());
+                            Constants.nearbyHospitals = results;
+                            hAdapter = new HospitalAdapter(context, results, new AdapterListener() {
+                                @Override
+                                public void onClick(NearPlacesResponse nearPlacesResponse) {
+
+                                }
+                            });
+                            recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+                            recyclerView.setAdapter(hAdapter);
+                            recyclerView.setVisibility(View.VISIBLE);
+                        }
+                    }
+
+                    @Override
+                    public void onError() {
+                        Toast.makeText(context, "Failed to get nearby hospitals", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                // Toast.makeText(context, "Longitude is  " + longitude + "   Latitude is   " + latitude, Toast.LENGTH_LONG).show();
+
+            }
+        }
+    }
+
+    private List<NearPlacesResponse> removeDuplicates(List<NearPlacesResponse> results) {
+        List<NearPlacesResponse> uniqueList = new ArrayList<>();
+        Map<String, NearPlacesResponse> uniqueMap = new HashMap<>();
+        for (NearPlacesResponse res : results) {
+            if (uniqueMap != null) {
+                if (uniqueMap.containsKey(res.getName())) {
+                    continue;
+                }
+            }
+            uniqueMap.put(res.getName(), res);
+        }
+        for (Map.Entry<String, NearPlacesResponse> r : uniqueMap.entrySet())
+            uniqueList.add(r.getValue());
+
+        return uniqueList;
+    }
+
+    private void getLocationPermission() {
+        /*
+         * Request location permission, so that we can get the location of the
+         * device. The result of the permission request is handled by a callback,
+         * onRequestPermissionsResult.
+         */
+        if (ContextCompat.checkSelfPermission(context.getApplicationContext(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(context.getApplicationContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            locationPermissionGranted = true;
+        } else {
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+
+        }
+        fetchLocation();
+    }
+
+
 }
