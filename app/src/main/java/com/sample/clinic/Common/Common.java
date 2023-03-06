@@ -1,5 +1,6 @@
 package com.sample.clinic.Common;
 
+import com.sample.clinic.Models.Bookings;
 import com.sample.clinic.Models.Buildings;
 import com.sample.clinic.Models.Users;
 
@@ -27,5 +28,14 @@ public class Common {
         params.put("picturePath", buildings.getPicturePath());
         params.put("videoPath", buildings.getVideoPath());
         return params;
+    }
+
+    public static Map<String, Object> getBookMap(Bookings bookings) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("bookDate", bookings.getBookDate());
+        map.put("clientName", bookings.getClientName());
+        map.put("userID", bookings.getUserID());
+        map.put("status", bookings.getStatus());
+        return map;
     }
 }

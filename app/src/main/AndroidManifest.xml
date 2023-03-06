@@ -38,8 +38,14 @@
         <activity
             android:name=".SetLocationActivity"
             android:exported="true"
-            android:screenOrientation="portrait"
             android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Design.Light" />
+        <activity
+            android:name=".HospitalDetailActivity"
+            android:exported="true"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Design.Light" />
 
         <meta-data

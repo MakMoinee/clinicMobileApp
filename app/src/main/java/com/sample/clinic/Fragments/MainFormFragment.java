@@ -2,6 +2,7 @@ package com.sample.clinic.Fragments;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -29,9 +30,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.gson.Gson;
 import com.sample.clinic.Adapters.BuildingAdapter;
 import com.sample.clinic.Adapters.HospitalAdapter;
 import com.sample.clinic.Common.Constants;
+import com.sample.clinic.HospitalDetailActivity;
 import com.sample.clinic.Interfaces.AdapterListener;
 import com.sample.clinic.Interfaces.BuildingListener;
 import com.sample.clinic.Interfaces.FragmentFinish;
@@ -372,7 +375,11 @@ public class MainFormFragment extends Fragment implements StorageListener {
                             hAdapter = new HospitalAdapter(context, results, new AdapterListener() {
                                 @Override
                                 public void onClick(NearPlacesResponse nearPlacesResponse) {
-
+                                    String rawHospital = new Gson().toJson(nearPlacesResponse);
+//                                    Log.e("rawHospital", rawHospital);
+                                    Intent intent = new Intent(context, HospitalDetailActivity.class);
+                                    intent.putExtra("rawHospital", rawHospital);
+                                    context.startActivity(intent);
                                 }
                             });
                             recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
