@@ -32,7 +32,7 @@ public class FillUpInfoActivity extends AppCompatActivity {
         fs = new LocalFirestore2(FillUpInfoActivity.this);
         pd = new ProgressDialog(FillUpInfoActivity.this);
         pd.setMessage("Sending Request ...");
-        pd.setCancelable(falses);
+        pd.setCancelable(false);
     }
 
     private void setListeners() {
