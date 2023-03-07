@@ -47,6 +47,18 @@
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Design.Light" />
+        <activity
+            android:name=".FillUpInfoActivity"
+            android:exported="true"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Design.Light" />
+        <activity
+            android:name=".EditBookingActivity"
+            android:exported="true"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Design.Light" />
 
         <meta-data
             android:name="com.google.android.gms.version"

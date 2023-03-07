@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Toast;
 
@@ -46,6 +47,8 @@ public class MainActivity extends AppCompatActivity implements FragmentFinish {
     private ProgressDialog ps;
 
     private List<Buildings> buildings;
+
+    Menu mainActivityMenu;
 
     private MainButtonsListener btnListener = new MainButtonsListener() {
         @Override
@@ -105,6 +108,14 @@ public class MainActivity extends AppCompatActivity implements FragmentFinish {
             ft = fm.beginTransaction();
             ft.replace(R.id.frame, fragment, null);
             ft.commit();
+        }
+
+        @Override
+        public void onLongItemClickBooking() {
+        }
+
+        @Override
+        public void onItemClickBooking() {
         }
     };
 
@@ -225,6 +236,5 @@ public class MainActivity extends AppCompatActivity implements FragmentFinish {
 
         }
     }
-
 
 }

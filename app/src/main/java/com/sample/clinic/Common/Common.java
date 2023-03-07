@@ -33,7 +33,9 @@ public class Common {
     public static Map<String, Object> getBookMap(Bookings bookings) {
         Map<String, Object> map = new HashMap<>();
         map.put("bookDate", bookings.getBookDate());
+        map.put("bookTime", bookings.getBookTime());
         map.put("clientName", bookings.getClientName());
+        map.put("address", bookings.getAddress());
         map.put("userID", bookings.getUserID());
         map.put("status", bookings.getStatus());
         return map;

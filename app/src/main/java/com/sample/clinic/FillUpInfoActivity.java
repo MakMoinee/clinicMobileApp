@@ -10,6 +10,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.sample.clinic.Interfaces.FireStoreListener;
 import com.sample.clinic.Models.Bookings;
+import com.sample.clinic.Models.Users;
+import com.sample.clinic.Preferrences.MyUserPreferrence;
 import com.sample.clinic.Services.LocalFirestore2;
 import com.sample.clinic.databinding.ActivityFillUpBinding;
 
@@ -44,16 +46,24 @@ public class FillUpInfoActivity extends AppCompatActivity {
                 Toast.makeText(FillUpInfoActivity.this, "Please Don't Leave Empty Fields", Toast.LENGTH_SHORT).show();
             } else {
                 pd.show();
-                Bookings bookings = new Bookings();
-                bookings.setClientName(name);
-                bookings.setBookDate("");
-                bookings.setMedicalHistory(medicalHistory);
-                bookings.setAddress(address);
+                String selectedDate = getIntent().getStringExtra("selectedDate");
+                String selectedTime = getIntent().getStringExtra("selectedTime");
+                String hospitalDataRaw = getIntent().getStringExtra("hospitalDataRaw");
+                Users users = new MyUserPreferrence(FillUpInfoActivity.this).getUsers();
+                Bookings bookings = new Bookings.BookingsBuilder(name)
+                        .setBookDate(selectedDate)
+                        .setBookTime(selectedTime)
+                        .setAddress(address)
+                        .setUserID(users.getDocID())
+                        .setHospitalDataRaw(hospitalDataRaw)
+                        .setMedicalHistory(medicalHistory)
+                        .build();
                 fs.addBooking(bookings, new FireStoreListener() {
                     @Override
                     public void onSuccess() {
                         pd.dismiss();
-                        FireStoreListener.super.onSuccess();
+                        Toast.makeText(FillUpInfoActivity.this, "Successfully Added Booking", Toast.LENGTH_SHORT).show();
+                        finish();
                     }
 
                     @Override

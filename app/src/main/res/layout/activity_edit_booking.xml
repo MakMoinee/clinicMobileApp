@@ -84,14 +84,46 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <TextView
+            android:id="@+id/txtBookDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/layoutPastHistory"
+            android:layout_marginTop="20dp"
+            android:text="Book Date:"
+            android:textColor="@android:color/black"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/txtBookTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txtBookDate"
+            android:layout_marginTop="20dp"
+            android:text="Book Time:"
+            android:textColor="@android:color/black"
+            android:textSize="15sp" />
+
+        <Button
+            android:id="@+id/btnSetBookDate"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txtBookTime"
+            android:layout_marginTop="20dp"
+            android:text="Set Book Date and Time"
+            android:theme="@style/CustomBlueThem" />
+
         <Button
             android:id="@+id/btnSaveBook"
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/layoutPastHistory"
-            android:layout_marginTop="20dp"
+            android:layout_below="@+id/btnSetBookDate"
+            android:layout_marginTop="10dp"
             android:text="Proceed Booking" />
+
+
     </RelativeLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

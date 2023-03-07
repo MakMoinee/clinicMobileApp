@@ -9,4 +9,12 @@ public interface MainButtonsListener {
     void onHomeClick();
 
     void onConsultClick();
+
+    default void onLongItemClickBooking(){
+
+    }
+
+    default void onItemClickBooking(){
+
+    }
 }

@@ -17,7 +17,8 @@ public class Constants {
     public static final String virtualGuidePath = "Virtual Guides/";
 
     public static final String photoURL = "https://maps.googleapis.com/maps/api/place/photo";
-
+//
+//    String data ="{\"api_key\":\""+api_key+"\",\"voc_value\":"+temperature+",\"carbon_value\":"+humidity+"";
     public static List<NearPlacesResponse> nearbyHospitals = new ArrayList<>();
     public static final String getHospitalNearMeURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json";
     public static final String gmapKey = "AIzaSyB5aCq16HGA-S2uhBvYitXPuwyKNAng7Vo";

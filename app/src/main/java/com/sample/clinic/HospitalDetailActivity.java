@@ -1,7 +1,10 @@
 package com.sample.clinic;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.icu.text.TimeZoneFormat;
 import android.location.Location;
 import android.os.Bundle;
@@ -27,7 +30,9 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.sample.clinic.Fragments.DatePickerFragment;
 import com.sample.clinic.Fragments.TimePickerFragment;
+import com.sample.clinic.Models.Bookings;
 import com.sample.clinic.Models.NearPlacesResponse;
+import com.sample.clinic.Services.LocalFirestore2;
 import com.sample.clinic.databinding.ActivityHospitalDetailBinding;
 
 import java.text.DateFormat;
@@ -46,12 +51,17 @@ public class HospitalDetailActivity extends AppCompatActivity implements OnMapRe
     String selectedDate = "", selectedTime = "";
     TimePickerFragment tpTime;
 
+    LocalFirestore2 fs;
+
+    NearPlacesResponse currentHospital;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityHospitalDetailBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         String rawHospital = getIntent().getStringExtra("rawHospital");
+        fs = new LocalFirestore2(HospitalDetailActivity.this);
         if (rawHospital == "") {
             finish();
         } else {
@@ -80,7 +90,7 @@ public class HospitalDetailActivity extends AppCompatActivity implements OnMapRe
 
 
                 hospitalLocation = new LatLng(nearPlacesResponse.getGeometry().getLocation().getLat(), nearPlacesResponse.getGeometry().getLocation().getLng());
-
+                currentHospital = nearPlacesResponse;
             } else {
                 finish();
             }
@@ -108,7 +118,13 @@ public class HospitalDetailActivity extends AppCompatActivity implements OnMapRe
                             selectedTime = String.format("%s:%s am", hourOfDay, minute);
                         }
 
-                        
+                        Intent intent = new Intent(HospitalDetailActivity.this,FillUpInfoActivity.class);
+                        intent.putExtra("selectedDate",selectedDate);
+                        intent.putExtra("selectedTime",selectedTime);
+                        intent.putExtra("hospitalDataRaw",new Gson().toJson(currentHospital));
+                        startActivity(intent);
+
+
                     }, HospitalDetailActivity.this);
                     tpTime.show(getSupportFragmentManager(), "TIME_PICk");
                 }
