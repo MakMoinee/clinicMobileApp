@@ -1,5 +1,6 @@
 package com.sample.clinic.Common;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.sample.clinic.Models.NearPlacesResponse;
 import com.sample.clinic.R;
 
@@ -16,8 +17,11 @@ public class Constants {
     public static final String postersPath = "Posters/";
     public static final String virtualGuidePath = "Virtual Guides/";
 
+    public static String locationSearch = "";
+    public static LatLng selectedLocation;
+
     public static final String photoURL = "https://maps.googleapis.com/maps/api/place/photo";
-//
+    //
 //    String data ="{\"api_key\":\""+api_key+"\",\"voc_value\":"+temperature+",\"carbon_value\":"+humidity+"";
     public static List<NearPlacesResponse> nearbyHospitals = new ArrayList<>();
     public static final String getHospitalNearMeURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json";

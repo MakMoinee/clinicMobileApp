@@ -13,5 +13,5 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "ClinicSystemApp"
+rootProject.name = "PQ MEDFIND"
 include ':app'

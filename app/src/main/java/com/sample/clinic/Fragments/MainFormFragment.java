@@ -48,6 +48,7 @@ import com.sample.clinic.Models.NearPlacesResponse;
 import com.sample.clinic.R;
 import com.sample.clinic.Services.LocalRequest;
 import com.sample.clinic.Services.Storage;
+import com.sample.clinic.SetLocationActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -120,24 +121,63 @@ public class MainFormFragment extends Fragment implements StorageListener {
         View mView = LayoutInflater.from(context).inflate(R.layout.fragment_main, container, false);
         initViews(mView);
         initListeners(mView);
-        getLocationPermission();
+        if (Constants.selectedLocation == null) {
+            getLocationPermission();
+        } else {
+            loadLocation();
+        }
+
         return mView;
     }
 
+    private void loadLocation() {
+        if (Constants.selectedLocation == null) return;
+        currentLocation = Constants.selectedLocation;
+        Constants.selectedLocation = null;
+        recyclerView.setAdapter(null);
+        NearPlacesRequest req = new NearPlacesRequest();
+        req.setLocation(String.format("%s,%s", currentLocation.latitude, currentLocation.longitude));
+        localRequest.getNearbyHospitals(req, new LocalRequestListener() {
+            @Override
+            public void onSuccess(FullNearPlacesResponse f) {
+                fullNearPlacesResponse = f;
+                if (f != null) {
+                    recyclerView.setAdapter(null);
+                    List<NearPlacesResponse> results = removeDuplicates(fullNearPlacesResponse.getResults());
+                    Constants.nearbyHospitals = results;
+                    hAdapter = new HospitalAdapter(context, results, new AdapterListener() {
+                        @Override
+                        public void onClick(NearPlacesResponse nearPlacesResponse) {
+                            String rawHospital = new Gson().toJson(nearPlacesResponse);
+//                                    Log.e("rawHospital", rawHospital);
+                            Intent intent = new Intent(context, HospitalDetailActivity.class);
+                            intent.putExtra("rawHospital", rawHospital);
+                            context.startActivity(intent);
+                        }
+                    });
+                    recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+                    recyclerView.setAdapter(hAdapter);
+                    recyclerView.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onError() {
+                Toast.makeText(context, "Failed to get nearby hospitals", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     private void initListeners(View mView) {
-        txtSearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                loadChangeSearchValue();
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
+        txtSearch.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                if (currentLocation != null) {
+                    Intent intent = new Intent(context, SetLocationActivity.class);
+                    intent.putExtra("rawCurrentLocation", new Gson().toJson(currentLocation));
+                    context.startActivity(intent);
+                } else {
+                    Toast.makeText(context, "Please make sure you turn on your location services first", Toast.LENGTH_SHORT).show();
+                }
 
             }
         });
@@ -149,9 +189,9 @@ public class MainFormFragment extends Fragment implements StorageListener {
                 case R.id.action_booking:
                     mainBtnListener.onBookingClick();
                     return true;
-                case R.id.action_consult:
-                    mainBtnListener.onConsultClick();
-                    break;
+//                case R.id.action_consult:
+//                    mainBtnListener.onConsultClick();
+//                    break;
                 case R.id.action_settings:
                     mainBtnListener.onNavClick();
                     break;
@@ -262,6 +302,16 @@ public class MainFormFragment extends Fragment implements StorageListener {
 
         txtSearch.setAdapter(adapterStr);
         btnBottom = mView.findViewById(R.id.navBottom);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (currentLocation == null) {
+                    Toast.makeText(context, "Current Location couldn't detected. Please turn on location services or move to an open space", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }, 5000);
+
     }
 
 
@@ -395,6 +445,8 @@ public class MainFormFragment extends Fragment implements StorageListener {
                 });
                 // Toast.makeText(context, "Longitude is  " + longitude + "   Latitude is   " + latitude, Toast.LENGTH_LONG).show();
 
+            } else {
+
             }
         }
     }
@@ -441,5 +493,9 @@ public class MainFormFragment extends Fragment implements StorageListener {
         fetchLocation();
     }
 
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadLocation();
+    }
 }

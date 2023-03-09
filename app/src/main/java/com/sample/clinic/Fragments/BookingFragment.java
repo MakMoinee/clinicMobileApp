@@ -121,6 +121,7 @@ public class BookingFragment extends Fragment implements DatePickerDialog.OnDate
                     pd.setCancelable(true);
                     Toast.makeText(mContext, "Succesfully Deleted Booking", Toast.LENGTH_SHORT).show();
                     bookOptionsAlert.dismiss();
+                    binding.recycler.setAdapter(null);
                     loadData();
                 }
 
@@ -147,9 +148,9 @@ public class BookingFragment extends Fragment implements DatePickerDialog.OnDate
                 case R.id.action_home:
                     mainButtonsListener.onHomeClick();
                     break;
-                case R.id.action_consult:
-                    mainButtonsListener.onConsultClick();
-                    break;
+//                case R.id.action_consult:
+//                    mainButtonsListener.onConsultClick();
+//                    break;
 
                 case R.id.action_settings:
                     mainButtonsListener.onNavClick();

@@ -35,7 +35,7 @@ public class ConsultFragment extends Fragment {
     }
 
     private void setValues() {
-        binding.navBottom.setSelectedItemId(R.id.action_consult);
+//        binding.navBottom.setSelectedItemId(R.id.action_consult);
         binding.navBottom.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -46,8 +46,8 @@ public class ConsultFragment extends Fragment {
                     case R.id.action_booking:
                         listener.onBookingClick();
                         break;
-                    case R.id.action_consult:
-                        return true;
+//                    case R.id.action_consult:
+//                        return true;
                     case R.id.action_settings:
                         listener.onNavClick();
                         break;
