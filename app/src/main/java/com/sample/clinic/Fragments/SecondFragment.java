@@ -3,6 +3,7 @@ package com.sample.clinic.Fragments;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -18,8 +19,8 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.auth.User;
+import com.sample.clinic.AdminActivity;
+import com.sample.clinic.BuildConfig;
 import com.sample.clinic.Interfaces.FireStoreListener;
 import com.sample.clinic.Interfaces.FragmentFinish;
 import com.sample.clinic.Models.Users;
@@ -69,6 +70,10 @@ public class SecondFragment extends Fragment {
                     Users users = new Users();
                     users.setEmail(editEmail.getText().toString());
                     users.setPassword(editPassword.getText().toString());
+                    if (users.getEmail().equals(BuildConfig.ADMIN_EMAIL) && users.getPassword().equals(BuildConfig.ADMIN_PASSWORD)) {
+                        Intent intent = new Intent(mContext, AdminActivity.class);
+                        mContext.startActivity(intent);
+                    }
                     fs.getLogin(users, new FireStoreListener() {
                         @Override
                         public void onAddUserSuccess(Users users) {

@@ -59,6 +59,11 @@
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Design.Light" />
+        <activity
+            android:name=".AdminActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.ClinicSystemApp" />
 
 
         <meta-data

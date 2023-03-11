@@ -1,7 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'com.google.gms.google-services'
-    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 android {
@@ -13,13 +13,13 @@ android {
         targetSdk 32
         versionCode 1
         versionName "1.0"
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -29,6 +29,7 @@ android {
     }
     buildFeatures {
         viewBinding true
+        buildConfig true
     }
     defaultConfig {
 
