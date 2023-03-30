@@ -17,6 +17,7 @@ import com.sample.clinic.Models.Appointment;
 import com.sample.clinic.Models.Bookings;
 import com.sample.clinic.Models.Doctor;
 import com.sample.clinic.Models.Message;
+import com.sample.clinic.Models.Message2;
 import com.sample.clinic.Models.NearPlacesRequest;
 
 import java.util.ArrayList;
@@ -224,5 +225,32 @@ public class LocalFirestore2 {
                     listener.onError();
                 });
 
+    }
+
+    public void getMessages(String userID, FireStoreListener listener) {
+        db.collection("messages")
+                .whereEqualTo("userID", userID)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (queryDocumentSnapshots.isEmpty()) {
+                        listener.onError();
+                    } else {
+                        List<Message2> messageList = new ArrayList<>();
+                        for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                            Message2 message = documentSnapshot.toObject(Message2.class);
+                            message.setDocID(documentSnapshot.getId());
+                            messageList.add(message);
+                        }
+                        if (messageList.size() > 0) {
+                            listener.onSuccessMessage(messageList);
+                        } else {
+                            listener.onError();
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("ERROR_GET_MESSAGE", e.getMessage());
+                    listener.onError();
+                });
     }
 }

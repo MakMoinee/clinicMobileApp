@@ -15,6 +15,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.sample.clinic.Common.Constants;
 import com.sample.clinic.Fragments.BookingFragment;
 import com.sample.clinic.Fragments.BuildingFragment;
+import com.sample.clinic.Fragments.ChatListFragment;
 import com.sample.clinic.Fragments.ConsultFragment;
 import com.sample.clinic.Fragments.CreateAccountFragment;
 import com.sample.clinic.Fragments.FirstFragment;
@@ -110,6 +111,16 @@ public class MainActivity extends AppCompatActivity implements FragmentFinish {
         @Override
         public void onItemClickBooking() {
         }
+
+        @Override
+        public void onChatClick() {
+            fragmentIndex = 6;
+            fragment = new ChatListFragment(MainActivity.this, btnListener);
+            fm = getSupportFragmentManager();
+            ft = fm.beginTransaction();
+            ft.replace(R.id.frame, fragment, null);
+            ft.commit();
+        }
     };
 
     @Override
@@ -187,7 +198,6 @@ public class MainActivity extends AppCompatActivity implements FragmentFinish {
         if (isNotif) {
             btnListener.onBookingClick();
         } else {
-//            fragment = new MainFormFragment(MainActivity.this, MainActivity.this, false, btnListener);
             fragment = new NearbyClinicMapFragment(MainActivity.this, MainActivity.this, btnListener);
             fm = getSupportFragmentManager();
             ft = fm.beginTransaction();
@@ -250,7 +260,10 @@ public class MainActivity extends AppCompatActivity implements FragmentFinish {
                 ft.replace(R.id.frame, fragment, null);
                 ft.commit();
                 break;
-
+            case 6:
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                onLoginFinish();
+                break;
         }
     }
 

@@ -111,6 +111,7 @@ public class NearbyClinicMapFragment extends Fragment {
                     listener.onNavClick();
                     break;
                 case R.id.action_chat:
+                    listener.onChatClick();
                     break;
             }
             return false;
