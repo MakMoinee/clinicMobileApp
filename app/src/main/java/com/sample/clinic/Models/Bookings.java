@@ -17,6 +17,7 @@ public class Bookings {
     String userID;
     String status;
     String hospitalDataRaw;
+    int notifID;
 
     public Bookings(BookingsBuilder builder) {
         this.bookDate = builder.bookDate;
@@ -26,6 +27,7 @@ public class Bookings {
         this.address  = builder.address;
         this.userID  = builder.userID;
         this.status  = builder.status;
+        this.notifID = builder.notifID;
         this.hospitalDataRaw  = builder.hospitalDataRaw;
     }
 
@@ -39,6 +41,8 @@ public class Bookings {
         String status;
 
         String hospitalDataRaw;
+
+        int notifID;
 
 
         public BookingsBuilder(String clientName) {
@@ -78,6 +82,11 @@ public class Bookings {
 
         public BookingsBuilder setHospitalDataRaw(String hospitalDataRaw) {
             this.hospitalDataRaw = hospitalDataRaw;
+            return this;
+        }
+
+        public BookingsBuilder setNotifID(int notifID) {
+            this.notifID = notifID;
             return this;
         }
 

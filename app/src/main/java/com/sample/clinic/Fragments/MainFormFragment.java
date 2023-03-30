@@ -113,6 +113,7 @@ public class MainFormFragment extends Fragment implements StorageListener {
             }, 50);
         }
 
+
     }
 
 
@@ -189,9 +190,9 @@ public class MainFormFragment extends Fragment implements StorageListener {
                 case R.id.action_booking:
                     mainBtnListener.onBookingClick();
                     return true;
-//                case R.id.action_consult:
-//                    mainBtnListener.onConsultClick();
-//                    break;
+                case R.id.action_appointment:
+                    mainBtnListener.onConsultClick();
+                    return true;
                 case R.id.action_settings:
                     mainBtnListener.onNavClick();
                     break;

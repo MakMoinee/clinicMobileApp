@@ -109,9 +109,8 @@ public class HospitalDetailActivity extends AppCompatActivity implements OnMapRe
 
                 if (selectedDate != "") {
                     tpTime = new TimePickerFragment((view1, hourOfDay, minute) -> {
-                        Calendar mCalendar1 = Calendar.getInstance();
-                        mCalendar1.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                        mCalendar1.set(Calendar.MINUTE, minute);
+                        mCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                        mCalendar.set(Calendar.MINUTE, (minute-1));
                         if (hourOfDay > 12) {
                             selectedTime = String.format("%s:%s pm", (hourOfDay - 12), minute);
                         } else {
@@ -121,6 +120,8 @@ public class HospitalDetailActivity extends AppCompatActivity implements OnMapRe
                         Intent intent = new Intent(HospitalDetailActivity.this,FillUpInfoActivity.class);
                         intent.putExtra("selectedDate",selectedDate);
                         intent.putExtra("selectedTime",selectedTime);
+                        intent.putExtra("hospitalName",currentHospital.getName());
+                        intent.putExtra("timeInMillis",mCalendar.getTimeInMillis());
                         intent.putExtra("hospitalDataRaw",new Gson().toJson(currentHospital));
                         startActivity(intent);
 

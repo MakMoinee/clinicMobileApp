@@ -8,14 +8,16 @@ import com.sample.clinic.Models.Users;
 public class MyUserPreferrence {
 
     private Context context;
+    SharedPreferences pref;
 
     public MyUserPreferrence(Context mContext) {
         this.context = mContext;
+        this.pref = context.getSharedPreferences("user", Context.MODE_PRIVATE);
     }
 
     public void saveUser(Users users) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences("user", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        SharedPreferences.Editor editor = pref.edit();
         editor.putString("docID", users.getDocID());
         editor.putString("email", users.getEmail());
         editor.putString("password", users.getPassword());
@@ -31,15 +33,18 @@ public class MyUserPreferrence {
 
     public Users getUsers() {
         Users users = new Users();
-        SharedPreferences sharedPreferences = context.getSharedPreferences("user", Context.MODE_PRIVATE);
-        users.setDocID(sharedPreferences.getString("docID", ""));
-        users.setEmail(sharedPreferences.getString("email", ""));
-        users.setPassword(sharedPreferences.getString("password", ""));
-        users.setFirstName(sharedPreferences.getString("firstName", ""));
-        users.setMiddleName(sharedPreferences.getString("middleName", ""));
-        users.setLastName(sharedPreferences.getString("lastName", ""));
-        users.setSecret(sharedPreferences.getString("secret", ""));
-        users.setUserType(sharedPreferences.getInt("userType", 0));
+        users.setDocID(pref.getString("docID", ""));
+        users.setEmail(pref.getString("email", ""));
+        users.setPassword(pref.getString("password", ""));
+        users.setFirstName(pref.getString("firstName", ""));
+        users.setMiddleName(pref.getString("middleName", ""));
+        users.setLastName(pref.getString("lastName", ""));
+        users.setSecret(pref.getString("secret", ""));
+        users.setUserType(pref.getInt("userType", 0));
         return users;
+    }
+
+    public String getDocID(){
+        return pref.getString("docID","");
     }
 }

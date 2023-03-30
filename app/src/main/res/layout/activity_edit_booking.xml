@@ -115,13 +115,13 @@
             android:theme="@style/CustomBlueThem" />
 
         <Button
-            android:id="@+id/btnSaveBook"
+            android:id="@+id/btnUpdateBook"
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/btnSetBookDate"
             android:layout_marginTop="10dp"
-            android:text="Proceed Booking" />
+            android:text="Proceed Update Booking" />
 
 
     </RelativeLayout>

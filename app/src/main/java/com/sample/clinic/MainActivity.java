@@ -3,12 +3,9 @@ package com.sample.clinic;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
-import android.view.View;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -21,19 +18,15 @@ import com.sample.clinic.Fragments.BuildingFragment;
 import com.sample.clinic.Fragments.ConsultFragment;
 import com.sample.clinic.Fragments.CreateAccountFragment;
 import com.sample.clinic.Fragments.FirstFragment;
-import com.sample.clinic.Fragments.MainFormFragment;
+import com.sample.clinic.Fragments.NearbyClinicMapFragment;
 import com.sample.clinic.Fragments.ProfileFragment;
 import com.sample.clinic.Fragments.SecondFragment;
 import com.sample.clinic.Interfaces.FragmentFinish;
 import com.sample.clinic.Interfaces.MainButtonsListener;
 import com.sample.clinic.Interfaces.ProfileListener;
-import com.sample.clinic.Interfaces.StorageListener;
 import com.sample.clinic.Models.Buildings;
 import com.sample.clinic.Models.Users;
 import com.sample.clinic.Preferrences.MyUserPreferrence;
-import com.sample.clinic.Services.Storage;
-
-import org.checkerframework.checker.units.qual.A;
 
 import java.util.List;
 
@@ -93,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements FragmentFinish {
         @Override
         public void onHomeClick() {
             fragmentIndex = 3;
-            fragment = new MainFormFragment(MainActivity.this, MainActivity.this, false, btnListener);
+            fragment = new NearbyClinicMapFragment(MainActivity.this, MainActivity.this, btnListener);
             fm = getSupportFragmentManager();
             ft = fm.beginTransaction();
             ft.replace(R.id.frame, fragment, null);
@@ -152,7 +145,16 @@ public class MainActivity extends AppCompatActivity implements FragmentFinish {
     public void onFinishFirstFragment() {
         Users users = new MyUserPreferrence(MainActivity.this).getUsers();
         if (users.getDocID() != "") {
-            onLoginFinish();
+
+            if (users.getDocID().equals(BuildConfig.ADMIN_UUID)) {
+                Intent intent = new Intent(MainActivity.this, AdminActivity.class);
+                startActivity(intent);
+                finish();
+            } else {
+                onLoginFinish();
+            }
+
+
         } else {
             fragmentIndex = 1;
             fragment = new SecondFragment(MainActivity.this, MainActivity.this);
@@ -160,6 +162,8 @@ public class MainActivity extends AppCompatActivity implements FragmentFinish {
             ft = fm.beginTransaction();
             ft.replace(R.id.frame, fragment, null);
             ft.commit();
+
+
         }
 
     }
@@ -178,11 +182,19 @@ public class MainActivity extends AppCompatActivity implements FragmentFinish {
     @Override
     public void onLoginFinish() {
         fragmentIndex = 3;
-        fragment = new MainFormFragment(MainActivity.this, MainActivity.this, false, btnListener);
-        fm = getSupportFragmentManager();
-        ft = fm.beginTransaction();
-        ft.replace(R.id.frame, fragment, null);
-        ft.commit();
+
+        Boolean isNotif = getIntent().getBooleanExtra("isNotif", false);
+        if (isNotif) {
+            btnListener.onBookingClick();
+        } else {
+//            fragment = new MainFormFragment(MainActivity.this, MainActivity.this, false, btnListener);
+            fragment = new NearbyClinicMapFragment(MainActivity.this, MainActivity.this, btnListener);
+            fm = getSupportFragmentManager();
+            ft = fm.beginTransaction();
+            ft.replace(R.id.frame, fragment, null);
+            ft.commit();
+        }
+
     }
 
     @Override
@@ -212,6 +224,11 @@ public class MainActivity extends AppCompatActivity implements FragmentFinish {
     }
 
     @Override
+    public void onAdminFragment() {
+        finish();
+    }
+
+    @Override
     public void onBackPressed() {
         switch (fragmentIndex) {
             case 1:
@@ -227,7 +244,7 @@ public class MainActivity extends AppCompatActivity implements FragmentFinish {
                 buildFragment.releasePlayer();
                 overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                 fragmentIndex = 3;
-                fragment = new MainFormFragment(MainActivity.this, MainActivity.this, true, btnListener);
+                fragment = new NearbyClinicMapFragment(MainActivity.this, MainActivity.this, btnListener);
                 fm = getSupportFragmentManager();
                 ft = fm.beginTransaction();
                 ft.replace(R.id.frame, fragment, null);

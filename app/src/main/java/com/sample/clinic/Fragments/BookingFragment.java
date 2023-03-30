@@ -67,11 +67,17 @@ public class BookingFragment extends Fragment implements DatePickerDialog.OnDate
     }
 
     private void loadData() {
-        Users users = new MyUserPreferrence(mContext).getUsers();
+
         pd = new ProgressDialog(mContext);
         pd.setMessage("Sending Request ...");
         pd.setCancelable(true);
         pd.show();
+        getAllBooking();
+    }
+
+    private void getAllBooking() {
+        binding.recycler.setAdapter(null);
+        Users users = new MyUserPreferrence(mContext).getUsers();
         fs.getAllBookings(users.getDocID(), new FireStoreListener() {
 
             @Override
@@ -110,6 +116,7 @@ public class BookingFragment extends Fragment implements DatePickerDialog.OnDate
             Intent intent = new Intent(mContext, EditBookingActivity.class);
             intent.putExtra("bookingRaw", new Gson().toJson(selectedBook));
             mContext.startActivity(intent);
+            bookOptionsAlert.dismiss();
         });
         btnDeleteBooking.setOnClickListener(v -> {
             pd.setCancelable(false);
@@ -119,6 +126,9 @@ public class BookingFragment extends Fragment implements DatePickerDialog.OnDate
                 public void onSuccess() {
                     pd.dismiss();
                     pd.setCancelable(true);
+                    Intent intent = new Intent("com.sample.clinic.REMINDER");
+                    intent.putExtra("notification_id", (selectedBook.getNotifID() * -1));
+                    mContext.sendBroadcast(intent);
                     Toast.makeText(mContext, "Succesfully Deleted Booking", Toast.LENGTH_SHORT).show();
                     bookOptionsAlert.dismiss();
                     binding.recycler.setAdapter(null);
@@ -148,9 +158,9 @@ public class BookingFragment extends Fragment implements DatePickerDialog.OnDate
                 case R.id.action_home:
                     mainButtonsListener.onHomeClick();
                     break;
-//                case R.id.action_consult:
-//                    mainButtonsListener.onConsultClick();
-//                    break;
+                case R.id.action_appointment:
+                    mainButtonsListener.onConsultClick();
+                    break;
 
                 case R.id.action_settings:
                     mainButtonsListener.onNavClick();
@@ -177,5 +187,12 @@ public class BookingFragment extends Fragment implements DatePickerDialog.OnDate
 
         }
 //        tvDate.setText(selectedDate);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        pd.show();
+        getAllBooking();
     }
 }

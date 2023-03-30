@@ -17,4 +17,8 @@ public interface MainButtonsListener {
     default void onItemClickBooking(){
 
     }
+
+    default void onChatClick(){
+
+    }
 }

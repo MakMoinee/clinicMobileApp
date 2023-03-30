@@ -48,7 +48,6 @@ public class SecondFragment extends Fragment {
         mContext = context;
         fn = finish;
 
-
     }
 
     @Override
@@ -60,20 +59,25 @@ public class SecondFragment extends Fragment {
     }
 
     private void initListener() {
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (editEmail.getText().toString().equals("") || editPassword.getText().toString().equals("")) {
-                    Toast.makeText(mContext, "Please don't leave empty fields", Toast.LENGTH_SHORT).show();
+        btnLogin.setOnClickListener(v -> {
+            if (editEmail.getText().toString().equals("") || editPassword.getText().toString().equals("")) {
+                Toast.makeText(mContext, "Please don't leave empty fields", Toast.LENGTH_SHORT).show();
+            } else {
+                pd.show();
+                Users users = new Users();
+                users.setEmail(editEmail.getText().toString());
+                users.setPassword(editPassword.getText().toString());
+                if (users.getEmail().equals(BuildConfig.ADMIN_EMAIL) && users.getPassword().equals(BuildConfig.ADMIN_PASSWORD)) {
+                    pd.dismiss();
+                    String uuid = BuildConfig.ADMIN_UUID;
+                    users.setDocID(uuid);
+                    Log.e("DATA", users.getDocID());
+                    new MyUserPreferrence(mContext).saveUser(users);
+                    Toast.makeText(mContext, "Login Successfully", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(mContext, AdminActivity.class);
+                    mContext.startActivity(intent);
+                    fn.onAdminFragment();
                 } else {
-                    pd.show();
-                    Users users = new Users();
-                    users.setEmail(editEmail.getText().toString());
-                    users.setPassword(editPassword.getText().toString());
-                    if (users.getEmail().equals(BuildConfig.ADMIN_EMAIL) && users.getPassword().equals(BuildConfig.ADMIN_PASSWORD)) {
-                        Intent intent = new Intent(mContext, AdminActivity.class);
-                        mContext.startActivity(intent);
-                    }
                     fs.getLogin(users, new FireStoreListener() {
                         @Override
                         public void onAddUserSuccess(Users users) {
@@ -90,111 +94,92 @@ public class SecondFragment extends Fragment {
                             Toast.makeText(mContext, "Wrong username or Password", Toast.LENGTH_SHORT).show();
                         }
                     });
-
                 }
+
+
             }
         });
-        txtCreateAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                fn.onFinishSecondFragment();
-            }
-        });
-        txtForgotPassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder mBuilder = new AlertDialog.Builder(mContext);
-                View tView = LayoutInflater.from(mContext).inflate(R.layout.dialog_forgot_pass, null, false);
-                initForgotViews(tView);
-                initForgotListeners(tView);
-                mBuilder.setView(tView);
-                fpAlertDialog = mBuilder.create();
-                fpAlertDialog.show();
-            }
+        txtCreateAccount.setOnClickListener(v -> fn.onFinishSecondFragment());
+        txtForgotPassword.setOnClickListener(v -> {
+            AlertDialog.Builder mBuilder = new AlertDialog.Builder(mContext);
+            View tView = LayoutInflater.from(mContext).inflate(R.layout.dialog_forgot_pass, null, false);
+            initForgotViews(tView);
+            initForgotListeners(tView);
+            mBuilder.setView(tView);
+            fpAlertDialog = mBuilder.create();
+            fpAlertDialog.show();
         });
     }
 
     private void initForgotListeners(View tView) {
-        layoutPW.setEndIconOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (showPW) {
-                    layoutPW.setEndIconDrawable(R.drawable.ic_eye_off);
-                    editPW.setInputType(InputType.TYPE_CLASS_TEXT);
-                    showPW = false;
-                } else {
-                    layoutPW.setEndIconDrawable(R.drawable.ic_eye);
-                    editPW.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                    showPW = true;
-                }
+        layoutPW.setEndIconOnClickListener(v -> {
+            if (showPW) {
+                layoutPW.setEndIconDrawable(R.drawable.ic_eye_off);
+                editPW.setInputType(InputType.TYPE_CLASS_TEXT);
+                showPW = false;
+            } else {
+                layoutPW.setEndIconDrawable(R.drawable.ic_eye);
+                editPW.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                showPW = true;
             }
         });
 
-        layoutConfirmPW.setEndIconOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (showCPW) {
-                    layoutConfirmPW.setEndIconDrawable(R.drawable.ic_eye_off);
-                    editConfirmPW.setInputType(InputType.TYPE_CLASS_TEXT);
-                    showCPW = false;
-                } else {
-                    layoutConfirmPW.setEndIconDrawable(R.drawable.ic_eye);
-                    editConfirmPW.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                    showCPW = true;
-                }
+        layoutConfirmPW.setEndIconOnClickListener(v -> {
+            if (showCPW) {
+                layoutConfirmPW.setEndIconDrawable(R.drawable.ic_eye_off);
+                editConfirmPW.setInputType(InputType.TYPE_CLASS_TEXT);
+                showCPW = false;
+            } else {
+                layoutConfirmPW.setEndIconDrawable(R.drawable.ic_eye);
+                editConfirmPW.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                showCPW = true;
             }
         });
 
-        layoutSecret.setEndIconOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (showSecret) {
-                    layoutSecret.setEndIconDrawable(R.drawable.ic_eye_off);
-                    editSecret.setInputType(InputType.TYPE_CLASS_TEXT);
-                    showSecret = false;
-                } else {
-                    layoutSecret.setEndIconDrawable(R.drawable.ic_eye);
-                    editSecret.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                    showSecret = true;
-                }
+        layoutSecret.setEndIconOnClickListener(v -> {
+            if (showSecret) {
+                layoutSecret.setEndIconDrawable(R.drawable.ic_eye_off);
+                editSecret.setInputType(InputType.TYPE_CLASS_TEXT);
+                showSecret = false;
+            } else {
+                layoutSecret.setEndIconDrawable(R.drawable.ic_eye);
+                editSecret.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                showSecret = true;
             }
         });
 
-        btnSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (editSecret.getText().toString().equals("") ||
-                        editPW.getText().toString().equals("") ||
-                        editConfirmPW.getText().toString().equals("") ||
-                        editForgotEmail.getText().toString().equals("")) {
-                    Toast.makeText(mContext, "Please Don't Leave Empty Fields", Toast.LENGTH_SHORT).show();
+        btnSave.setOnClickListener(v -> {
+            if (editSecret.getText().toString().equals("") ||
+                    editPW.getText().toString().equals("") ||
+                    editConfirmPW.getText().toString().equals("") ||
+                    editForgotEmail.getText().toString().equals("")) {
+                Toast.makeText(mContext, "Please Don't Leave Empty Fields", Toast.LENGTH_SHORT).show();
+            } else {
+                if (editPW.getText().toString().equals(editConfirmPW.getText().toString())) {
+                    pd.show();
+                    Users mUser = new Users();
+                    mUser.setEmail(editForgotEmail.getText().toString());
+                    mUser.setPassword(editPW.getText().toString());
+                    mUser.setSecret(editSecret.getText().toString());
+                    fs.forgotPassword(mUser, new FireStoreListener() {
+                        @Override
+                        public void onAddUserSuccess(Users users) {
+                            pd.dismiss();
+                            fpAlertDialog.dismiss();
+                            Toast.makeText(mContext, "Successfully Reset Password", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onAddUserError(Exception e) {
+                            pd.dismiss();
+                            Toast.makeText(mContext, "Failed to Reset Password", Toast.LENGTH_SHORT).show();
+                            Log.e("FORGOT_PASSW_ERR", e.getMessage().toString());
+                        }
+                    });
                 } else {
-                    if (editPW.getText().toString().equals(editConfirmPW.getText().toString())) {
-                        pd.show();
-                        Users mUser = new Users();
-                        mUser.setEmail(editForgotEmail.getText().toString());
-                        mUser.setPassword(editPW.getText().toString());
-                        mUser.setSecret(editSecret.getText().toString());
-                        fs.forgotPassword(mUser, new FireStoreListener() {
-                            @Override
-                            public void onAddUserSuccess(Users users) {
-                                pd.dismiss();
-                                fpAlertDialog.dismiss();
-                                Toast.makeText(mContext, "Successfully Reset Password", Toast.LENGTH_SHORT).show();
-                            }
-
-                            @Override
-                            public void onAddUserError(Exception e) {
-                                pd.dismiss();
-                                Toast.makeText(mContext, "Failed to Reset Password", Toast.LENGTH_SHORT).show();
-                                Log.e("FORGOT_PASSW_ERR", e.getMessage().toString());
-                            }
-                        });
-                    } else {
-                        Toast.makeText(mContext, "Password Doesn't Match", Toast.LENGTH_SHORT).show();
-                    }
-
+                    Toast.makeText(mContext, "Password Doesn't Match", Toast.LENGTH_SHORT).show();
                 }
+
             }
         });
     }

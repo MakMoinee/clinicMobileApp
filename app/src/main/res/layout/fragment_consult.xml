@@ -8,6 +8,76 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="#EDEDED"
+            app:cardBackgroundColor="@android:color/white"
+            app:cardCornerRadius="15dp"
+            app:cardElevation="10dp">
+
+            <RelativeLayout
+                android:id="@+id/btnRelative"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?android:attr/selectableItemBackground"
+                android:padding="16dp">
+
+                <ImageView
+                    android:id="@+id/imgPoster"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:src="@drawable/doctor" />
+
+                <TextView
+                    android:id="@+id/txtDoctorName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_toRightOf="@+id/imgPoster"
+                    android:text="Doctor Profiles"
+                    android:textColor="@android:color/black"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+            </RelativeLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:id="@+id/lblAp"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/card"
+            android:text="Appointments"
+            android:textColor="@android:color/black"
+            android:textSize="20sp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/lblAp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="70dp" />
+
+        <TextView
+            android:id="@+id/txtNoAppointment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/lblAp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:text="There are no appointments"
+            android:textColor="@android:color/black"
+            android:textSize="18sp" />
+
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/navBottom"
             android:layout_width="match_parent"

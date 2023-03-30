@@ -8,4 +8,6 @@ public interface FragmentFinish {
     void onLoginFinish();
     void openBuildingFragment(Buildings buildings);
     void openProfileFragment();
+
+    void onAdminFragment();
 }

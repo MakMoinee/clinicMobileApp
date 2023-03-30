@@ -1,7 +1,10 @@
 package com.sample.clinic.Common;
 
+import com.sample.clinic.Models.Appointment;
 import com.sample.clinic.Models.Bookings;
 import com.sample.clinic.Models.Buildings;
+import com.sample.clinic.Models.Doctor;
+import com.sample.clinic.Models.Message;
 import com.sample.clinic.Models.Users;
 
 import java.util.HashMap;
@@ -38,6 +41,46 @@ public class Common {
         map.put("address", bookings.getAddress());
         map.put("userID", bookings.getUserID());
         map.put("status", bookings.getStatus());
+        map.put("notifID", bookings.getNotifID());
+        map.put("hospitalDataRaw", bookings.getHospitalDataRaw());
+        return map;
+    }
+
+    public static Map<String, Object> getDoctorMap(Doctor doctor) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("doctorName", doctor.getDoctorName());
+        map.put("specialize", doctor.getSpecialize());
+        map.put("address", doctor.getAddress());
+        map.put("contactNumber", doctor.getContactNumber());
+
+        return map;
+    }
+
+    public static Map<String, Object> getAppointmentMap(Appointment appointment) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("doctorName", appointment.getDoctorName());
+        map.put("bookDateTime", appointment.getBookDateTime());
+        map.put("userID", appointment.getUserID());
+        map.put("doctorID", appointment.getDoctorID());
+        map.put("notifID", appointment.getNotifID());
+        return map;
+    }
+
+    public static Map<String, Object> getMessageMap(Message message, String name) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("messageID", message.getMessageID());
+        map.put("userID", message.getUserID());
+        map.put("doctorName", name);
+        return map;
+    }
+
+    public static Map<String, Object> getMsgMap(Message message) {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("messageID", message.getMessageID());
+        map.put("userID", message.getUserID());
+        map.put("recipientID", message.getRecipientUserID());
+        map.put("messages", message.getMessages());
+
         return map;
     }
 }

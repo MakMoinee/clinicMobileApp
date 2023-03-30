@@ -1,7 +1,12 @@
 package com.sample.clinic;
 
+import android.annotation.SuppressLint;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -13,13 +18,20 @@ import com.sample.clinic.Models.Bookings;
 import com.sample.clinic.Models.Users;
 import com.sample.clinic.Preferrences.MyUserPreferrence;
 import com.sample.clinic.Services.LocalFirestore2;
+import com.sample.clinic.Services.ReminderNotif;
 import com.sample.clinic.databinding.ActivityFillUpBinding;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Random;
 
 public class FillUpInfoActivity extends AppCompatActivity {
 
     ActivityFillUpBinding binding;
     LocalFirestore2 fs;
     ProgressDialog pd;
+    String dateTimeStr = "";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,8 +60,24 @@ public class FillUpInfoActivity extends AppCompatActivity {
                 pd.show();
                 String selectedDate = getIntent().getStringExtra("selectedDate");
                 String selectedTime = getIntent().getStringExtra("selectedTime");
+                String hospitalName = getIntent().getStringExtra("hospitalName");
                 String hospitalDataRaw = getIntent().getStringExtra("hospitalDataRaw");
+
+                long timeInMilli = getIntent().getLongExtra("timeInMillis", 0);
+                SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
+                dateTimeStr = "";
+                try {
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTimeInMillis(timeInMilli);
+                    dateTimeStr = format.format(calendar.getTime());
+                } catch (Exception e) {
+                    Log.e("ERROR_PARSING_DATE", e.getMessage());
+
+                }
                 Users users = new MyUserPreferrence(FillUpInfoActivity.this).getUsers();
+                Random randI = new Random();
+                int myRandInt = randI.nextInt(100);
+                int randomInt = myRandInt + 1;
                 Bookings bookings = new Bookings.BookingsBuilder(name)
                         .setBookDate(selectedDate)
                         .setBookTime(selectedTime)
@@ -57,11 +85,13 @@ public class FillUpInfoActivity extends AppCompatActivity {
                         .setUserID(users.getDocID())
                         .setHospitalDataRaw(hospitalDataRaw)
                         .setMedicalHistory(medicalHistory)
+                        .setNotifID(randomInt)
                         .build();
                 fs.addBooking(bookings, new FireStoreListener() {
                     @Override
                     public void onSuccess() {
                         pd.dismiss();
+                        showNotifs(bookings.getNotifID(), timeInMilli, String.format("Booked %s at %s", hospitalName, dateTimeStr));
                         Toast.makeText(FillUpInfoActivity.this, "Successfully Added Booking", Toast.LENGTH_SHORT).show();
                         finish();
                     }
@@ -74,5 +104,16 @@ public class FillUpInfoActivity extends AppCompatActivity {
                 });
             }
         });
+    }
+
+    @SuppressLint("NewApi")
+    private void showNotifs(int notifID, long notificationTime, String notificationText) {
+        Intent notificationIntent = new Intent(FillUpInfoActivity.this, ReminderNotif.class);
+        notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        notificationIntent.putExtra(ReminderNotif.NOTIFICATION_ID, notifID);
+        notificationIntent.putExtra(ReminderNotif.NOTIFICATION_TEXT, notificationText);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, notifID, notificationIntent, PendingIntent.FLAG_MUTABLE);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, notificationTime, pendingIntent);
     }
 }
