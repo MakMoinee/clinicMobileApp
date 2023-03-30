@@ -1,5 +1,6 @@
 package com.sample.clinic.Models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Data;
@@ -8,8 +9,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class Communicate {
-    List<String> sender;
-    List<String> recipient;
+    List<String> sender = new ArrayList<>();
+    List<String> recipient = new ArrayList<>();
     String senderDate;
     String recipientDate;
 

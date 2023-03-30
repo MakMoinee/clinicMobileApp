@@ -241,6 +241,7 @@ public class LocalFirestore2 {
                             message.setDocID(documentSnapshot.getId());
                             messageList.add(message);
                         }
+
                         if (messageList.size() > 0) {
                             listener.onSuccessMessage(messageList);
                         } else {
@@ -250,6 +251,17 @@ public class LocalFirestore2 {
                 })
                 .addOnFailureListener(e -> {
                     Log.e("ERROR_GET_MESSAGE", e.getMessage());
+                    listener.onError();
+                });
+    }
+
+    public void deleteMessage(String docID, FireStoreListener listener){
+        db.collection("messages")
+                .document(docID)
+                .delete()
+                .addOnSuccessListener(unused -> listener.onSuccess())
+                .addOnFailureListener(e -> {
+                    Log.e("ERROR_DELETE_MSG",e.getMessage());
                     listener.onError();
                 });
     }

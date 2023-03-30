@@ -39,6 +39,10 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
         Message2 msg = list.get(position);
         holder.txtDoctorName.setText(msg.getDoctorName());
         holder.itemView.setOnClickListener(v -> listener.onChatClick(holder.getAbsoluteAdapterPosition()));
+        holder.itemView.setOnLongClickListener(v -> {
+            listener.onLongClick(holder.getAbsoluteAdapterPosition());
+            return false;
+        });
     }
 
     @Override

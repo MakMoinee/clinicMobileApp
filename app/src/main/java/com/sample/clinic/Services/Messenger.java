@@ -53,4 +53,29 @@ public class Messenger {
 
     }
 
+    public void updateMessage(Message message, MessageListener listener) {
+        Map<String, Object> messageMap = Common.getMsgMap(message);
+        this.ref.child("messages").child(message.getMessageID()).setValue(messageMap, (error, ref) -> {
+            if (error != null) {
+                listener.onError();
+            } else {
+                listener.onSuccess(message);
+            }
+        });
+    }
+
+    public void deleteMessage(String messageID, MessageListener listener) {
+        this.ref.child("messages").child(messageID).removeValue(new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                if (error == null) {
+                    listener.onSuccess();
+                } else {
+                    Log.e("ERROR", error.getMessage());
+                    listener.onError();
+                }
+            }
+        });
+    }
+
 }

@@ -7,5 +7,9 @@ public interface MessageListener {
 
     }
 
+    default void onSuccess() {
+
+    }
+
     void onError();
 }

@@ -37,7 +37,19 @@
                 android:fontFamily="@font/roboto_regular"
                 android:text="Juan Dela Cruz"
                 android:textColor="@android:color/black"
-                android:textSize="18sp" />
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/txtChatDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:layout_alignParentRight="true"
+                android:fontFamily="@font/roboto_regular"
+                android:text="Juan Dela Cruz"
+                android:textColor="@android:color/black"
+                android:textSize="8sp" />
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
 

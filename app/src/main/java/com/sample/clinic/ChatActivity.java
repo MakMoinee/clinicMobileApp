@@ -9,6 +9,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.common.reflect.TypeToken;
 import com.google.firebase.database.DataSnapshot;
@@ -16,7 +17,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
+import com.sample.clinic.Adapters.ChatConvoAdapter;
 import com.sample.clinic.Common.Common;
+import com.sample.clinic.Interfaces.AdapterListener;
 import com.sample.clinic.Interfaces.FireStoreListener;
 import com.sample.clinic.Interfaces.MessageListener;
 import com.sample.clinic.Models.Communicate;
@@ -43,6 +46,12 @@ public class ChatActivity extends AppCompatActivity {
     LocalFirestore2 db;
     ProgressDialog pd;
     DatabaseReference ref;
+
+    Boolean hasRecipient = false;
+    ChatConvoAdapter adapter;
+
+    Message currentMessage;
+    List<String> msgList = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -82,7 +91,6 @@ public class ChatActivity extends AppCompatActivity {
             } else {
                 pd.show();
 
-                List<String> msgList = new ArrayList<>();
                 msgList.add(msg);
                 Calendar calendar = Calendar.getInstance();
                 Communicate communicate = new Communicate.CommunicateBuilder()
@@ -96,33 +104,82 @@ public class ChatActivity extends AppCompatActivity {
                         .setRecipientUserID(selectedDoctor.getDocID())
                         .setMessages(communicateList)
                         .build();
-                messenger.newMessage(message, new MessageListener() {
-                    @Override
-                    public void onSuccess(Message m) {
-                        db.addMessage(m, selectedDoctor.getDoctorName(), new FireStoreListener() {
-                            @Override
-                            public void onSuccess() {
-                                pd.dismiss();
-                                Toast.makeText(ChatActivity.this, "Successfully Sent Message", Toast.LENGTH_SHORT).show();
-                            }
+                if (!hasRecipient) {
+                    messenger.newMessage(message, new MessageListener() {
+                        @Override
+                        public void onSuccess(Message m) {
+                            db.addMessage(m, selectedDoctor.getDoctorName(), new FireStoreListener() {
+                                @Override
+                                public void onSuccess() {
+                                    pd.dismiss();
+                                    Toast.makeText(ChatActivity.this, "Successfully Sent Message", Toast.LENGTH_SHORT).show();
+                                    hasRecipient = true;
+                                    binding.txtMessage.setText("");
+                                    currentMessage = m;
+                                    hasRecipientListener(m.getMessageID());
+                                }
 
-                            @Override
-                            public void onError() {
-                                pd.dismiss();
-                                Toast.makeText(ChatActivity.this, "Failed to sent message", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
+                                @Override
+                                public void onError() {
+                                    pd.dismiss();
+                                    Toast.makeText(ChatActivity.this, "Failed to sent message", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
 
-                    @Override
-                    public void onError() {
-                        pd.dismiss();
-                        Toast.makeText(ChatActivity.this, "Failed to sent message", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                        @Override
+                        public void onError() {
+                            pd.dismiss();
+                            Toast.makeText(ChatActivity.this, "Failed to sent message", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } else {
+                    message.setMessageID(currentMessage.getMessageID());
+                    messenger.updateMessage(message, new MessageListener() {
+                        @Override
+                        public void onSuccess(Message message) {
+                            pd.dismiss();
+                            Toast.makeText(ChatActivity.this, "Successfully Sent Message", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onError() {
+                            pd.dismiss();
+                            Toast.makeText(ChatActivity.this, "Failed to sent message", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
 
 
             }
         });
+    }
+
+    private void hasRecipientListener(String messageID) {
+        ref.child("messages").child(messageID)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        Message message = snapshot.getValue(Message.class);
+
+                        if (message != null) {
+                            adapter = new ChatConvoAdapter(ChatActivity.this, message.getMessages(), new AdapterListener() {
+                                @Override
+                                public void onChatClick(int position) {
+                                    AdapterListener.super.onChatClick(position);
+                                }
+                            });
+
+                            binding.recycler.setLayoutManager(new LinearLayoutManager(ChatActivity.this));
+                            binding.recycler.setAdapter(adapter);
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
     }
 }

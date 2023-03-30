@@ -17,6 +17,10 @@ public interface AdapterListener {
 
     }
 
+    default void onLongClick(int position) {
+
+    }
+
     default void onClick(Doctor doctor) {
 
     }

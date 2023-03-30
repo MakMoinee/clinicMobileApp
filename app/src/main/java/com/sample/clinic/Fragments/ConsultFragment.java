@@ -66,6 +66,9 @@ public class ConsultFragment extends Fragment {
                     break;
                 case R.id.action_appointment:
                     return true;
+                case R.id.action_chat:
+                    listener.onChatClick();
+                    break;
                 case R.id.action_settings:
                     listener.onNavClick();
                     break;
