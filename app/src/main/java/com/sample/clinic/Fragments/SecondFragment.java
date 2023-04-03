@@ -84,7 +84,15 @@ public class SecondFragment extends Fragment {
                             pd.dismiss();
                             Toast.makeText(mContext, "Login Successfully", Toast.LENGTH_SHORT).show();
                             new MyUserPreferrence(mContext).saveUser(users);
-                            fn.onLoginFinish();
+                            switch (users.getUserType()) {
+                                case 3:
+                                    fn.onDoctorLogin();
+                                    break;
+                                default:
+                                    fn.onLoginFinish();
+                                    break;
+                            }
+
                         }
 
                         @Override

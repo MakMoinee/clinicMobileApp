@@ -303,4 +303,8 @@ public class MainActivity extends AppCompatActivity implements FragmentFinish {
         }
     }
 
+    @Override
+    public void onDoctorLogin() {
+
+    }
 }

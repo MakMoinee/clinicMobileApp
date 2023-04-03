@@ -10,4 +10,6 @@ public interface FragmentFinish {
     void openProfileFragment();
 
     void onAdminFragment();
+
+    void onDoctorLogin();
 }

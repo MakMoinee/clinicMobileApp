@@ -213,6 +213,33 @@ public class LocalFirestore2 {
                 .addOnFailureListener(e -> listener.onError());
     }
 
+    public void getDoctorAppointments(String docID, FireStoreListener listener) {
+        db.collection("appointments")
+                .whereEqualTo("doctorID", docID)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (queryDocumentSnapshots.isEmpty()) {
+                        listener.onError();
+                    } else {
+                        List<Appointment> appointmentList = new ArrayList<>();
+                        for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                            if (documentSnapshot.exists()) {
+                                Appointment appointment = documentSnapshot.toObject(Appointment.class);
+                                appointment.setDocID(documentSnapshot.getId());
+                                appointmentList.add(appointment);
+                            }
+                        }
+
+                        if (appointmentList.size() > 0) {
+                            listener.onSuccessAppointment(appointmentList);
+                        } else {
+                            listener.onError();
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> listener.onError());
+    }
+
 
     public void addMessage(Message message, String name, FireStoreListener listener) {
         Map<String, Object> map = Common.getMessageMap(message, name);
