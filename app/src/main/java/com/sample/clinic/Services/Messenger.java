@@ -12,11 +12,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.sample.clinic.Common.Common;
 import com.sample.clinic.Interfaces.MessageListener;
 import com.sample.clinic.Models.Message;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Messenger {
@@ -55,13 +58,13 @@ public class Messenger {
 
     public void updateMessage(Message message, MessageListener listener) {
         Map<String, Object> messageMap = Common.getMsgMap(message);
-        this.ref.child("messages").child(message.getMessageID()).setValue(messageMap, (error, ref) -> {
-            if (error != null) {
-                listener.onError();
-            } else {
-                listener.onSuccess(message);
-            }
-        });
+        this.ref
+                .child("messages")
+                .child(message.getMessageID())
+                .setValue(messageMap)
+                .addOnSuccessListener(unused -> listener.onSuccess())
+                .addOnFailureListener(e -> listener.onError());
+
     }
 
     public void deleteMessage(String messageID, MessageListener listener) {
@@ -75,6 +78,21 @@ public class Messenger {
                     listener.onError();
                 }
             }
+        });
+    }
+
+    public void getMessage(String messageID, MessageListener listener) {
+        this.ref.child("messages").child(messageID).get().addOnSuccessListener(dataSnapshot -> {
+            if (dataSnapshot.exists()) {
+                Message message = dataSnapshot.getValue(Message.class);
+                listener.onSuccess(message);
+
+            } else {
+                listener.onError();
+            }
+        }).addOnFailureListener(e -> {
+            Log.e("FAILURE_GETTING_MSGS",e.getMessage());
+            listener.onError();
         });
     }
 

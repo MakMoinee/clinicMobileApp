@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +16,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.google.gson.Gson;
 import com.sample.clinic.Adapters.ChatListAdapter;
+import com.sample.clinic.ChatDetailsActivity;
 import com.sample.clinic.Interfaces.AdapterListener;
 import com.sample.clinic.Interfaces.FireStoreListener;
 import com.sample.clinic.Interfaces.MainButtonsListener;
@@ -62,12 +65,16 @@ public class ChatListFragment extends Fragment {
         fs.getMessages(users.getDocID(), new FireStoreListener() {
             @Override
             public void onSuccessMessage(List<Message2> list) {
+                binding.txtNoActiveHistory.setVisibility(View.GONE);
                 msgList = list;
                 pd.dismiss();
                 adapter = new ChatListAdapter(mContext, list, new AdapterListener() {
                     @Override
                     public void onChatClick(int position) {
-
+                        Message2 msg = msgList.get(position);
+                        Intent intent = new Intent(mContext, ChatDetailsActivity.class);
+                        intent.putExtra("msgRaw", new Gson().toJson(msg));
+                        startActivity(intent);
                     }
 
                     @Override
@@ -124,6 +131,7 @@ public class ChatListFragment extends Fragment {
             public void onError() {
                 pd.dismiss();
                 Toast.makeText(mContext, "There are no chats history", Toast.LENGTH_SHORT).show();
+                binding.txtNoActiveHistory.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -152,5 +160,12 @@ public class ChatListFragment extends Fragment {
             }
             return false;
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        binding.recycler.setAdapter(null);
+        loadData();
     }
 }

@@ -5,7 +5,11 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.View;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -28,6 +32,7 @@ import com.sample.clinic.Interfaces.ProfileListener;
 import com.sample.clinic.Models.Buildings;
 import com.sample.clinic.Models.Users;
 import com.sample.clinic.Preferrences.MyUserPreferrence;
+import com.sample.clinic.databinding.DialogSettingsBinding;
 
 import java.util.List;
 
@@ -41,32 +46,24 @@ public class MainActivity extends AppCompatActivity implements FragmentFinish {
     private ProgressDialog ps;
 
     private List<Buildings> buildings;
+    DialogSettingsBinding settingsBinding;
+    AlertDialog settingsDialog, dialog;
 
     Menu mainActivityMenu;
+
+    private WebView wv;
+    private WebSettings ws;
 
     private MainButtonsListener btnListener = new MainButtonsListener() {
         @Override
         public void onNavClick() {
             AlertDialog.Builder nBuilder = new AlertDialog.Builder(MainActivity.this);
-            DialogInterface.OnClickListener dListener = new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    switch (which) {
-                        case DialogInterface.BUTTON_NEGATIVE:
-                            new MyUserPreferrence(MainActivity.this).saveUser(new Users());
-                            startFragment();
-                            break;
-                        case DialogInterface.BUTTON_POSITIVE:
-                            dialog.cancel();
-                            break;
-                    }
-                }
-            };
-            nBuilder.setMessage("Do you want to proceed signinig out?")
-                    .setNegativeButton("Yes", dListener)
-                    .setPositiveButton("No", dListener)
-                    .setCancelable(false);
-            nBuilder.show();
+            settingsBinding = DialogSettingsBinding.inflate(getLayoutInflater(), null, false);
+            nBuilder.setView(settingsBinding.getRoot());
+            setSettingsDialogListeners();
+            settingsDialog = nBuilder.create();
+            settingsDialog.show();
+
         }
 
         @Override
@@ -122,6 +119,45 @@ public class MainActivity extends AppCompatActivity implements FragmentFinish {
             ft.commit();
         }
     };
+
+    private void setSettingsDialogListeners() {
+        settingsBinding.relLogout.setOnClickListener(v -> {
+            AlertDialog.Builder nBuilder = new AlertDialog.Builder(MainActivity.this);
+            DialogInterface.OnClickListener dListener = (dialog, which) -> {
+                switch (which) {
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        new MyUserPreferrence(MainActivity.this).saveUser(new Users());
+                        settingsDialog.dismiss();
+                        startFragment();
+                        break;
+                    case DialogInterface.BUTTON_POSITIVE:
+                        dialog.cancel();
+                        break;
+                }
+            };
+            nBuilder.setMessage("Do you want to proceed signinig out?")
+                    .setNegativeButton("Yes", dListener)
+                    .setPositiveButton("No", dListener)
+                    .setCancelable(false);
+            nBuilder.show();
+        });
+        settingsBinding.relTC.setOnClickListener(v -> {
+            settingsDialog.dismiss();
+            View sView = LayoutInflater.from(MainActivity.this).inflate(R.layout.dialog_terms, null, false);
+            initializeTermDiag(sView);
+            AlertDialog.Builder mBuilder = new AlertDialog.Builder(MainActivity.this);
+            mBuilder.setView(sView);
+            dialog = mBuilder.create();
+            dialog.show();
+        });
+    }
+
+    private void initializeTermDiag(View sView) {
+        wv = sView.findViewById(R.id.myweb);
+        ws = wv.getSettings();
+        ws.setJavaScriptEnabled(true);
+        wv.loadUrl("https://www.termsandconditionsgenerator.com/live.php?token=u1AIL7yApHsxy5rrqyfgNqJ4ijs6yEj2");
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

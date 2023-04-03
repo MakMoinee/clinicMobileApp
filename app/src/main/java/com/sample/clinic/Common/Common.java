@@ -7,6 +7,7 @@ import com.sample.clinic.Models.Doctor;
 import com.sample.clinic.Models.Message;
 import com.sample.clinic.Models.Users;
 
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -71,6 +72,8 @@ public class Common {
         map.put("messageID", message.getMessageID());
         map.put("userID", message.getUserID());
         map.put("doctorName", name);
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        map.put("chatDateTime", timestamp);
         return map;
     }
 

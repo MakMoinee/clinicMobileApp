@@ -80,6 +80,10 @@
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.ClinicSystemApp" />
+        <activity
+            android:name=".ChatDetailsActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ClinicSystemApp" />
 
         <receiver
             android:name=".Services.ReminderNotif"

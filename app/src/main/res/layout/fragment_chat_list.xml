@@ -6,7 +6,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="#EDEDED">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler"
@@ -15,6 +16,18 @@
             android:layout_marginBottom="80dp"
             android:clickable="true"
             android:padding="16dp" />
+
+        <TextView
+            android:id="@+id/txtNoActiveHistory"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/roboto_regular"
+            android:text="There are no chat history"
+            android:textColor="@android:color/black"
+            android:textSize="18sp" />
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/navBottom"

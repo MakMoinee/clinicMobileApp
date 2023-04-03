@@ -255,13 +255,26 @@ public class LocalFirestore2 {
                 });
     }
 
-    public void deleteMessage(String docID, FireStoreListener listener){
+    public void deleteMessage(String docID, FireStoreListener listener) {
         db.collection("messages")
                 .document(docID)
                 .delete()
                 .addOnSuccessListener(unused -> listener.onSuccess())
                 .addOnFailureListener(e -> {
-                    Log.e("ERROR_DELETE_MSG",e.getMessage());
+                    Log.e("ERROR_DELETE_MSG", e.getMessage());
+                    listener.onError();
+                });
+    }
+
+    public void updateMessage(Message message, String docName, String docID, FireStoreListener listener) {
+        Map<String, Object> map = Common.getMessageMap(message, docName);
+        Log.e("MAP", map.entrySet().toString());
+        db.collection("messages")
+                .document(docID)
+                .set(map, SetOptions.merge())
+                .addOnSuccessListener(unused -> listener.onSuccess())
+                .addOnFailureListener(e -> {
+                    Log.e("ERROR_UPDATE_FS_MSG", e.getMessage());
                     listener.onError();
                 });
     }
