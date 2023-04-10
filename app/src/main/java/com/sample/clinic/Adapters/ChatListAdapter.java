@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.sample.clinic.Interfaces.AdapterListener;
 import com.sample.clinic.Models.Message2;
+import com.sample.clinic.Models.Users;
 import com.sample.clinic.R;
 
 import java.text.SimpleDateFormat;
@@ -21,11 +22,19 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
     Context mContext;
     List<Message2> list;
     AdapterListener listener;
+    List<Users> patientNames;
 
     public ChatListAdapter(Context mContext, List<Message2> list, AdapterListener listener) {
         this.mContext = mContext;
         this.list = list;
         this.listener = listener;
+    }
+
+    public ChatListAdapter(Context mContext, List<Message2> list, AdapterListener listener, List<Users> patientName) {
+        this.mContext = mContext;
+        this.list = list;
+        this.listener = listener;
+        this.patientNames = patientName;
     }
 
     @NonNull
@@ -38,7 +47,17 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull ChatListAdapter.ViewHolder holder, int position) {
         Message2 msg = list.get(position);
-        holder.txtDoctorName.setText(msg.getDoctorName());
+        if (patientNames.size() > 0) {
+            for (Users users : patientNames) {
+                if (users.getDocID().equals(msg.getUserID())) {
+                    holder.txtDoctorName.setText(String.format("%s, %s %s", users.getLastName(), users.getFirstName(), users.getMiddleName()));
+                    break;
+                }
+            }
+        } else {
+            holder.txtDoctorName.setText(msg.getDoctorName());
+        }
+
         String pattern = "yyyy-MM-dd hh:mm a";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 

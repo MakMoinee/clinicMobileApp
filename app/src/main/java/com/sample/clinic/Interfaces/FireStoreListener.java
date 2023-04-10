@@ -23,7 +23,6 @@ public interface FireStoreListener {
     }
 
 
-
     default void onSuccess(List<Bookings> bookingsList) {
 
     }
@@ -37,6 +36,10 @@ public interface FireStoreListener {
     }
 
     default void onSuccessDoctor(List<Doctor> doctorList) {
+
+    }
+
+    default void onSuccessUsers(List<Users> usersList) {
 
     }
 

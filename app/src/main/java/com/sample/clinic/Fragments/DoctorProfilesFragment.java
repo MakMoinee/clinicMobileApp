@@ -21,6 +21,7 @@ import com.sample.clinic.Interfaces.AdapterListener;
 import com.sample.clinic.Interfaces.AdminListener;
 import com.sample.clinic.Interfaces.FireStoreListener;
 import com.sample.clinic.Models.Doctor;
+import com.sample.clinic.Models.Users;
 import com.sample.clinic.Services.LocalFirestore2;
 import com.sample.clinic.databinding.DialogAddDoctorBinding;
 import com.sample.clinic.databinding.DialogEditDoctorBinding;
@@ -88,33 +89,61 @@ public class DoctorProfilesFragment extends Fragment {
             String specialize = addDoctorBinding.editSpecialization.getText().toString();
             String address = addDoctorBinding.editAddress.getText().toString();
             String contactNumber = addDoctorBinding.editContactNumber.getText().toString();
+            String username = addDoctorBinding.editUsername.getText().toString();
+            String password = addDoctorBinding.editPassword.getText().toString();
+            String confirmPass = addDoctorBinding.editConfirmPassword.getText().toString();
+            String secret = addDoctorBinding.editSecret.getText().toString();
 
-            if (name.equals("") || specialize.equals("") || address.equals("") || contactNumber.equals("")) {
+            if (name.equals("") || specialize.equals("") || address.equals("") || contactNumber.equals("") || username.equals("") || password.equals("") || confirmPass.equals("")) {
                 Toast.makeText(mContext, "Please Don't Leave Empty Fields", Toast.LENGTH_SHORT).show();
             } else {
-                pd.show();
-                Doctor doctor = new Doctor.DoctorBuilder()
-                        .setDoctorName(name)
-                        .setSpecialize(specialize)
-                        .setAddress(address)
-                        .setContactNumber(contactNumber)
-                        .build();
-                fs.addDoctor(doctor, new FireStoreListener() {
-                    @Override
-                    public void onSuccess() {
-                        pd.dismiss();
-                        alertAddDoctor.dismiss();
-                        Toast.makeText(mContext, "Successfully added doctor", Toast.LENGTH_SHORT).show();
-                        binding.recycler.setAdapter(null);
-                        loadData();
-                    }
+                if (password.equals(confirmPass)) {
+                    pd.show();
+                    Users users = new Users();
+                    users.setEmail(username);
+                    users.setPassword(password);
+                    users.setUserType(3);
+                    users.setSecret(secret);
 
-                    @Override
-                    public void onError() {
-                        pd.dismiss();
-                        Toast.makeText(mContext, "Failed to add doctor", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                    fs.addDoctorUser(users, new FireStoreListener() {
+                        @Override
+                        public void onAddUserSuccess(Users users) {
+                            Doctor doctor = new Doctor.DoctorBuilder()
+                                    .setDocID(users.getDocID())
+                                    .setDoctorName(name)
+                                    .setSpecialize(specialize)
+                                    .setAddress(address)
+                                    .setContactNumber(contactNumber)
+                                    .build();
+                            fs.addDoctor(doctor, new FireStoreListener() {
+                                @Override
+                                public void onSuccess() {
+                                    pd.dismiss();
+                                    alertAddDoctor.dismiss();
+                                    Toast.makeText(mContext, "Successfully added doctor", Toast.LENGTH_SHORT).show();
+                                    binding.recycler.setAdapter(null);
+                                    loadData();
+                                }
+
+                                @Override
+                                public void onError() {
+                                    pd.dismiss();
+                                    Toast.makeText(mContext, "Failed to add doctor", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onError() {
+                            Toast.makeText(mContext, "Failed to add doctor", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+
+                } else {
+                    Toast.makeText(mContext, "Passwords doesn't match", Toast.LENGTH_SHORT).show();
+                }
+
             }
 
         });
@@ -128,7 +157,7 @@ public class DoctorProfilesFragment extends Fragment {
                 adapter = new DoctorAdapter(mContext, new AdapterListener() {
                     @Override
                     public void onClick(Doctor doctor) {
-                        Log.e("DOCTOR_SELECTED",doctor.toString());
+                        Log.e("DOCTOR_SELECTED", doctor.toString());
                         AlertDialog.Builder sBuilder = new AlertDialog.Builder(mContext);
                         editDoctorBinding = DialogEditDoctorBinding.inflate(LayoutInflater.from(mContext), null, false);
                         setValuesInUpdateDialog(doctor);

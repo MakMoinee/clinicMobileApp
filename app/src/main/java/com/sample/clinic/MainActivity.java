@@ -33,6 +33,7 @@ import com.sample.clinic.Models.Buildings;
 import com.sample.clinic.Models.Users;
 import com.sample.clinic.Preferrences.MyUserPreferrence;
 import com.sample.clinic.databinding.DialogSettingsBinding;
+import com.sample.clinic.doctor.DoctorActivity;
 
 import java.util.List;
 
@@ -198,7 +199,12 @@ public class MainActivity extends AppCompatActivity implements FragmentFinish {
                 startActivity(intent);
                 finish();
             } else {
-                onLoginFinish();
+                if (users.getUserType() == 3) {
+                    onDoctorLogin();
+                } else {
+                    onLoginFinish();
+                }
+
             }
 
 
@@ -305,6 +311,8 @@ public class MainActivity extends AppCompatActivity implements FragmentFinish {
 
     @Override
     public void onDoctorLogin() {
-
+        Intent intent = new Intent(MainActivity.this, DoctorActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

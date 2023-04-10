@@ -57,6 +57,7 @@ public class Common {
         return map;
     }
 
+
     public static Map<String, Object> getAppointmentMap(Appointment appointment) {
         Map<String, Object> map = new HashMap<>();
         map.put("doctorName", appointment.getDoctorName());
@@ -72,6 +73,7 @@ public class Common {
         map.put("messageID", message.getMessageID());
         map.put("userID", message.getUserID());
         map.put("doctorName", name);
+        map.put("doctorID", message.getRecipientUserID());
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         map.put("chatDateTime", timestamp);
         return map;

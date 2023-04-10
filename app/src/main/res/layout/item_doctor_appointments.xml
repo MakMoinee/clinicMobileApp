@@ -7,7 +7,7 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
+        android:layout_margin="5dp"
         android:background="@color/teal_200"
         app:cardBackgroundColor="@android:color/white"
         app:cardCornerRadius="15dp"
@@ -16,6 +16,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
             android:padding="16dp">
 
             <ImageView
@@ -28,13 +29,42 @@
                 android:id="@+id/txtPatientName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
                 android:layout_marginLeft="20dp"
+                android:layout_marginTop="10dp"
                 android:layout_toRightOf="@+id/imgVisit"
                 android:fontFamily="@font/latobold"
                 android:text="Sample"
                 android:textColor="@android:color/black"
-                android:textSize="18sp" />
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/txtAppointmentDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txtPatientName"
+                android:layout_marginLeft="20dp"
+                android:layout_toRightOf="@+id/imgVisit"
+                android:textColor="@android:color/black"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/txtStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txtAppointmentDate"
+                android:layout_marginLeft="20dp"
+                android:layout_toRightOf="@+id/imgVisit"
+                android:textColor="@android:color/black"
+                android:textSize="12sp" />
+
+            <ImageButton
+                android:id="@+id/imgChat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_chat" />
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
 

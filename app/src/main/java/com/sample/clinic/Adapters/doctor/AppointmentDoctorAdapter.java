@@ -1,9 +1,11 @@
 package com.sample.clinic.Adapters.doctor;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,7 +16,15 @@ import com.sample.clinic.Models.Appointment;
 import com.sample.clinic.Models.Users;
 import com.sample.clinic.R;
 
+import java.text.ParseException;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 public class AppointmentDoctorAdapter extends RecyclerView.Adapter<AppointmentDoctorAdapter.ViewHolder> {
 
@@ -53,6 +63,23 @@ public class AppointmentDoctorAdapter extends RecyclerView.Adapter<AppointmentDo
 
         if (isUserFound) {
             holder.txtPatientName.setText(String.format("%s, %s %s", users.getLastName(), users.getFirstName(), users.getMiddleName()));
+            holder.txtAppointmentDate.setText(String.format("Appointment Date: \n%s", appointment.getBookDateTime()));
+            SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale.ENGLISH);
+            try {
+                Date convertedDate = dateFormat.parse(appointment.getBookDateTime());
+                long diffInMillies = Math.abs(System.currentTimeMillis() - convertedDate.getTime());
+                long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+                if (diff <= 0) {
+                    holder.txtStatus.setTextColor(Color.RED);
+                    holder.txtStatus.setText("Status: Invalid");
+                }else{
+                    holder.txtStatus.setTextColor(Color.GREEN);
+                    holder.txtStatus.setText("Status: Valid");
+                }
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+
         }
 
     }
@@ -63,11 +90,15 @@ public class AppointmentDoctorAdapter extends RecyclerView.Adapter<AppointmentDo
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView txtPatientName;
+        TextView txtPatientName, txtAppointmentDate,txtStatus;
+        ImageButton imgChat;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             txtPatientName = itemView.findViewById(R.id.txtPatientName);
+            txtAppointmentDate = itemView.findViewById(R.id.txtAppointmentDate);
+            txtStatus = itemView.findViewById(R.id.txtStatus);
+            imgChat = itemView.findViewById(R.id.imgChat);
         }
     }
 }

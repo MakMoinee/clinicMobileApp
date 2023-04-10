@@ -19,6 +19,7 @@ import com.sample.clinic.Models.Doctor;
 import com.sample.clinic.Models.Message;
 import com.sample.clinic.Models.Message2;
 import com.sample.clinic.Models.NearPlacesRequest;
+import com.sample.clinic.Models.Users;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -99,10 +100,56 @@ public class LocalFirestore2 {
     public void addDoctor(Doctor doctor, FireStoreListener listener) {
         Map<String, Object> finalMap = Common.getDoctorMap(doctor);
         db.collection("doctor")
-                .document()
+                .document(doctor.getDocID())
                 .set(finalMap)
                 .addOnSuccessListener(unused -> listener.onSuccess())
                 .addOnFailureListener(e -> listener.onError());
+    }
+
+    public void addDoctorUser(Users users, FireStoreListener listener) {
+        LocalHash hash = new LocalHash();
+        String hashPass = hash.makeHashPassword(users.getPassword());
+        users.setPassword(hashPass);
+        Map<String, Object> finalMap = Common.toLoginMaps(users);
+        db.collection("user")
+                .document()
+                .set(finalMap)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        db.collection("user")
+                                .whereEqualTo("email", users.getEmail())
+                                .whereEqualTo("userType", users.getUserType())
+                                .get()
+                                .addOnSuccessListener(queryDocumentSnapshots -> {
+                                    if (queryDocumentSnapshots.isEmpty()) {
+                                        listener.onError();
+                                    } else {
+                                        for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                                            if (documentSnapshot.exists()) {
+                                                Users users1 = documentSnapshot.toObject(Users.class);
+                                                if (users1 != null) {
+                                                    users1.setDocID(documentSnapshot.getId());
+                                                    listener.onAddUserSuccess(users1);
+                                                    break;
+                                                } else {
+                                                    listener.onError();
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                })
+                                .addOnFailureListener(e -> {
+                                    Log.e("FAILED_TO_GETUSER_DR", e.getMessage());
+                                    listener.onError();
+                                });
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("FAILED_TO_ADDUSER_DR", e.getMessage());
+                    listener.onError();
+                });
     }
 
     public void updateDoctor(Doctor doctor, FireStoreListener listener) {
@@ -240,6 +287,34 @@ public class LocalFirestore2 {
                 .addOnFailureListener(e -> listener.onError());
     }
 
+    public void getDoctorAppointmentsByName(String docID, String patientUserID, FireStoreListener listener) {
+        db.collection("appointments")
+                .whereEqualTo("doctorID", docID)
+                .whereEqualTo("userID", patientUserID)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (queryDocumentSnapshots.isEmpty()) {
+                        listener.onError();
+                    } else {
+                        List<Appointment> appointmentList = new ArrayList<>();
+                        for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                            if (documentSnapshot.exists()) {
+                                Appointment appointment = documentSnapshot.toObject(Appointment.class);
+                                appointment.setDocID(documentSnapshot.getId());
+                                appointmentList.add(appointment);
+                            }
+                        }
+
+                        if (appointmentList.size() > 0) {
+                            listener.onSuccessAppointment(appointmentList);
+                        } else {
+                            listener.onError();
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> listener.onError());
+    }
+
 
     public void addMessage(Message message, String name, FireStoreListener listener) {
         Map<String, Object> map = Common.getMessageMap(message, name);
@@ -257,6 +332,34 @@ public class LocalFirestore2 {
     public void getMessages(String userID, FireStoreListener listener) {
         db.collection("messages")
                 .whereEqualTo("userID", userID)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (queryDocumentSnapshots.isEmpty()) {
+                        listener.onError();
+                    } else {
+                        List<Message2> messageList = new ArrayList<>();
+                        for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                            Message2 message = documentSnapshot.toObject(Message2.class);
+                            message.setDocID(documentSnapshot.getId());
+                            messageList.add(message);
+                        }
+
+                        if (messageList.size() > 0) {
+                            listener.onSuccessMessage(messageList);
+                        } else {
+                            listener.onError();
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("ERROR_GET_MESSAGE", e.getMessage());
+                    listener.onError();
+                });
+    }
+
+    public void getDoctorMessages(String docID, FireStoreListener listener) {
+        db.collection("messages")
+                .whereEqualTo("doctorID", docID)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (queryDocumentSnapshots.isEmpty()) {
@@ -304,5 +407,69 @@ public class LocalFirestore2 {
                     Log.e("ERROR_UPDATE_FS_MSG", e.getMessage());
                     listener.onError();
                 });
+    }
+
+    public void getAllUsers(FireStoreListener listener) {
+        db.collection("user")
+                .whereEqualTo("userType", 2)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        if (queryDocumentSnapshots.isEmpty()) {
+                            listener.onError();
+                        } else {
+                            List<Users> usersList = new ArrayList<>();
+                            for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                                if (documentSnapshot.exists()) {
+                                    Users users = documentSnapshot.toObject(Users.class);
+                                    if (users != null) {
+                                        users.setDocID(documentSnapshot.getId());
+                                        usersList.add(users);
+                                    }
+                                }
+                            }
+
+                            if (usersList.size() > 0) {
+                                listener.onSuccessUsers(usersList);
+                            } else {
+                                listener.onError();
+                            }
+                        }
+
+                    }
+                })
+                .addOnFailureListener(e -> Log.e("ERROR_GET_USERS", e.getMessage()));
+    }
+
+    public void getUserByLastName(String lastName, FireStoreListener listener) {
+        db.collection("user")
+                .whereEqualTo("userType", 2)
+                .whereEqualTo("lastName", lastName)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (queryDocumentSnapshots.isEmpty()) {
+                        listener.onError();
+                    } else {
+                        List<Users> usersList = new ArrayList<>();
+                        for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                            if (documentSnapshot.exists()) {
+                                Users users = documentSnapshot.toObject(Users.class);
+                                if (users != null) {
+                                    users.setDocID(documentSnapshot.getId());
+                                    usersList.add(users);
+                                }
+                            }
+                        }
+
+                        if (usersList.size() > 0) {
+                            listener.onSuccessUsers(usersList);
+                        } else {
+                            listener.onError();
+                        }
+                    }
+
+                })
+                .addOnFailureListener(e -> Log.e("ERROR_GET_USERS", e.getMessage()));
     }
 }
