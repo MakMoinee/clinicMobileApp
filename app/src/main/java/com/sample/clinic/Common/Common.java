@@ -65,6 +65,8 @@ public class Common {
         map.put("userID", appointment.getUserID());
         map.put("doctorID", appointment.getDoctorID());
         map.put("notifID", appointment.getNotifID());
+        map.put("status", appointment.getStatus());
+        map.put("clientContactNumber", appointment.getClientContactNumber());
         return map;
     }
 

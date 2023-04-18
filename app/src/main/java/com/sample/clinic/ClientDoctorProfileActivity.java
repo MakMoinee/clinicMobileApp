@@ -116,52 +116,58 @@ public class ClientDoctorProfileActivity extends AppCompatActivity {
         showDoctorBinding.editContactNumber.setText(selectedDoctor.getContactNumber());
 
         showDoctorBinding.btnCreateAppointment.setOnClickListener(v -> {
-            dpDate = new DatePickerFragment((view, year, month, dayOfMonth) -> {
-                Calendar mCalendar = Calendar.getInstance();
-                mCalendar.set(Calendar.YEAR, year);
-                mCalendar.set(Calendar.MONTH, month);
-                mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            String clientContactNumber = showDoctorBinding.editClientContact.getText().toString();
+            if (clientContactNumber.equals("")) {
+                Toast.makeText(ClientDoctorProfileActivity.this, "Please Fill The Client Contact Number", Toast.LENGTH_SHORT).show();
+            } else {
+                dpDate = new DatePickerFragment((view, year, month, dayOfMonth) -> {
+                    Calendar mCalendar = Calendar.getInstance();
+                    mCalendar.set(Calendar.YEAR, year);
+                    mCalendar.set(Calendar.MONTH, month);
+                    mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
-                tpTime = new TimePickerFragment((view1, hourOfDay, minute) -> {
-                    mCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                    mCalendar.set(Calendar.MINUTE, minute);
+                    tpTime = new TimePickerFragment((view1, hourOfDay, minute) -> {
+                        mCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                        mCalendar.set(Calendar.MINUTE, minute);
 
-                    SimpleDateFormat dfFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
-                    try {
-                        String bookDateStr = dfFormat.format(mCalendar.getTime());
-                        Users users = new MyUserPreferrence(ClientDoctorProfileActivity.this).getUsers();
-                        Random randI = new Random();
-                        int myRandInt = randI.nextInt(100);
-                        int randomInt = myRandInt + 1;
-                        Appointment ap = new Appointment.AppointmentBuilder()
-                                .setDoctorName(selectedDoctor.getDoctorName())
-                                .setUserID(users.getDocID())
-                                .setBookDateTime(bookDateStr)
-                                .setNotifID(randomInt)
-                                .setDoctorID(selectedDoctor.getDocID())
-                                .build();
+                        SimpleDateFormat dfFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
+                        try {
+                            String bookDateStr = dfFormat.format(mCalendar.getTime());
+                            Users users = new MyUserPreferrence(ClientDoctorProfileActivity.this).getUsers();
+                            Random randI = new Random();
+                            int myRandInt = randI.nextInt(100);
+                            int randomInt = myRandInt + 1;
+                            Appointment ap = new Appointment.AppointmentBuilder()
+                                    .setDoctorName(selectedDoctor.getDoctorName())
+                                    .setUserID(users.getDocID())
+                                    .setBookDateTime(bookDateStr)
+                                    .setNotifID(randomInt)
+                                    .setClientContactNumber(clientContactNumber)
+                                    .setDoctorID(selectedDoctor.getDocID())
+                                    .build();
 
-                        fs.addAppointment(ap, new FireStoreListener() {
-                            @Override
-                            public void onSuccess() {
-                                alertShowDoctorDetails.dismiss();
-                                Toast.makeText(ClientDoctorProfileActivity.this, "Successfully Created Appointment", Toast.LENGTH_SHORT).show();
-                                finish();
-                            }
+                            fs.addAppointment(ap, new FireStoreListener() {
+                                @Override
+                                public void onSuccess() {
+                                    alertShowDoctorDetails.dismiss();
+                                    Toast.makeText(ClientDoctorProfileActivity.this, "Successfully Created Appointment", Toast.LENGTH_SHORT).show();
+                                    finish();
+                                }
 
-                            @Override
-                            public void onError() {
-                                Toast.makeText(ClientDoctorProfileActivity.this, "Failed to create appointment", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    } catch (Exception e) {
-                        Log.e("ERROR_PARSE_DATE", e.getMessage());
-                    }
-                }, ClientDoctorProfileActivity.this);
-                tpTime.show(getSupportFragmentManager(), "TIME_PICK");
-            });
+                                @Override
+                                public void onError() {
+                                    Toast.makeText(ClientDoctorProfileActivity.this, "Failed to create appointment", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        } catch (Exception e) {
+                            Log.e("ERROR_PARSE_DATE", e.getMessage());
+                        }
+                    }, ClientDoctorProfileActivity.this);
+                    tpTime.show(getSupportFragmentManager(), "TIME_PICK");
+                });
 
-            dpDate.show(getSupportFragmentManager(), "DATE_PICK");
+                dpDate.show(getSupportFragmentManager(), "DATE_PICK");
+            }
 
 
         });
@@ -198,7 +204,6 @@ public class ClientDoctorProfileActivity extends AppCompatActivity {
             if (doctorName.equals("")) {
                 Toast.makeText(this, "Please Don't Leave Empty Fields", Toast.LENGTH_SHORT).show();
             } else {
-
                 if (doctorName.equals("all")) {
                     setTitle("Doctor Profiles");
                     alertSearch.dismiss();

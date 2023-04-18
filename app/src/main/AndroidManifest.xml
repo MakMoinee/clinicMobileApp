@@ -89,6 +89,11 @@
             android:exported="true"
             android:theme="@style/Theme.ClinicSystemApp.NoActionBar" />
 
+        <activity
+            android:name=".doctor.DoctorChatActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ClinicSystemApp.NoActionBar" />
+
         <receiver
             android:name=".Services.ReminderNotif"
             android:exported="true">

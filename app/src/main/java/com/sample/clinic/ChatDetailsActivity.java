@@ -2,6 +2,7 @@ package com.sample.clinic;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -42,6 +43,7 @@ public class ChatDetailsActivity extends AppCompatActivity {
     ProgressDialog pd;
     List<String> messageList = new ArrayList<>();
     LocalFirestore2 db;
+    Message origMessage;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -72,12 +74,13 @@ public class ChatDetailsActivity extends AppCompatActivity {
                         .setSender(messageList)
                         .setSenderDate(calendar.getTime().toString())
                         .build();
-                List<Communicate> communicateList = new ArrayList<>();
-                communicateList.add(communicate);
+                origMessage.getMessages().add(communicate);
+
                 Message message = new Message.MessageBuilder()
                         .setUserID(users.getDocID())
-                        .setMessageID(selectedMsg.getMessageID())
-                        .setMessages(communicateList)
+                        .setMessageID(origMessage.getMessageID())
+                        .setRecipientUserID(selectedMsg.getDoctorID())
+                        .setMessages(origMessage.getMessages())
                         .build();
                 messenger.updateMessage(message, new MessageListener() {
                     @Override
@@ -86,19 +89,22 @@ public class ChatDetailsActivity extends AppCompatActivity {
                         db.updateMessage(message, selectedMsg.getDoctorName(), selectedMsg.getDocID(), new FireStoreListener() {
                             @Override
                             public void onSuccess() {
+                                pd.dismiss();
                                 Toast.makeText(ChatDetailsActivity.this, "Successfully Sent Message", Toast.LENGTH_SHORT).show();
-                                ;
+                                binding.txtMessage.setText("");
+                                messageList= new ArrayList<>();
                             }
 
                             @Override
                             public void onError() {
-                                FireStoreListener.super.onError();
+                                pd.dismiss();
                             }
                         });
                     }
 
                     @Override
                     public void onError() {
+                        pd.dismiss();
                         Toast.makeText(ChatDetailsActivity.this, "Failed to sent message", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -123,9 +129,8 @@ public class ChatDetailsActivity extends AppCompatActivity {
         messenger.getMessage(selectedMsg.getMessageID(), new MessageListener() {
             @Override
             public void onSuccess(Message message) {
-                for (Communicate c : message.getMessages()) {
-                    messageList = c.getSender();
-                }
+                origMessage = message;
+                messageList = new ArrayList<>();
                 pd.dismiss();
                 adapter = new ChatConvoAdapter(ChatDetailsActivity.this, message.getMessages(), new AdapterListener() {
                     @Override
@@ -140,6 +145,7 @@ public class ChatDetailsActivity extends AppCompatActivity {
                 });
                 binding.recycler.setLayoutManager(new LinearLayoutManager(ChatDetailsActivity.this));
                 binding.recycler.setAdapter(adapter);
+                binding.recycler.scrollToPosition(message.getMessages().size()-1);
                 addListener();
             }
 
@@ -158,6 +164,7 @@ public class ChatDetailsActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Message message = snapshot.getValue(Message.class);
                 if (message != null) {
+                    origMessage = message;
                     adapter = new ChatConvoAdapter(ChatDetailsActivity.this, message.getMessages(), new AdapterListener() {
                         @Override
                         public void onClick() {
@@ -171,6 +178,7 @@ public class ChatDetailsActivity extends AppCompatActivity {
                     });
                     binding.recycler.setLayoutManager(new LinearLayoutManager(ChatDetailsActivity.this));
                     binding.recycler.setAdapter(adapter);
+                    binding.recycler.scrollToPosition(message.getMessages().size()-1);
                 } else {
                     binding.recycler.setAdapter(null);
                 }

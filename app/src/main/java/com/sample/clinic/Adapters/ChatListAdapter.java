@@ -47,7 +47,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull ChatListAdapter.ViewHolder holder, int position) {
         Message2 msg = list.get(position);
-        if (patientNames.size() > 0) {
+        if (patientNames!=null && patientNames.size() > 0) {
             for (Users users : patientNames) {
                 if (users.getDocID().equals(msg.getUserID())) {
                     holder.txtDoctorName.setText(String.format("%s, %s %s", users.getLastName(), users.getFirstName(), users.getMiddleName()));

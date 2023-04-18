@@ -116,6 +116,7 @@ public class ChatActivity extends AppCompatActivity {
                                     hasRecipient = true;
                                     binding.txtMessage.setText("");
                                     currentMessage = m;
+                                    msgList= new ArrayList<>();
                                     hasRecipientListener(m.getMessageID());
                                 }
 
@@ -178,7 +179,7 @@ public class ChatActivity extends AppCompatActivity {
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-
+                        pd.dismiss();
                     }
                 });
     }

@@ -65,7 +65,6 @@ public class DoctorActivity extends AppCompatActivity implements DoctorActivityL
                     ft.replace(R.id.frame, fragment, null);
                     ft.commit();
                     return true;
-                case R.id.action_appointment:
                 default:
                     return false;
             }

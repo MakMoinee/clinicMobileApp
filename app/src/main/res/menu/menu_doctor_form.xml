@@ -9,12 +9,6 @@
         android:title="Home"
         app:showAsAction="always" />
     <item
-        android:id="@+id/action_patients"
-        android:icon="@drawable/patients"
-        android:orderInCategory="102"
-        android:title="Appointments"
-        app:showAsAction="always" />
-    <item
         android:id="@+id/action_chat"
         android:icon="@drawable/doctorchat"
         android:orderInCategory="103"

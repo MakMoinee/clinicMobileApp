@@ -2,6 +2,7 @@ package com.sample.clinic.Adapters.doctor;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,19 +68,37 @@ public class AppointmentDoctorAdapter extends RecyclerView.Adapter<AppointmentDo
             SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm a", Locale.ENGLISH);
             try {
                 Date convertedDate = dateFormat.parse(appointment.getBookDateTime());
-                long diffInMillies = Math.abs(System.currentTimeMillis() - convertedDate.getTime());
+                long diffInMillies = System.currentTimeMillis() - convertedDate.getTime();
                 long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
-                if (diff <= 0) {
+                Log.e("DIFF_IN_MILES", Long.toString(diffInMillies));
+                Log.e("diff", Long.toString(diff));
+                if (appointment.getStatus().equals("rejected")) {
                     holder.txtStatus.setTextColor(Color.RED);
-                    holder.txtStatus.setText("Status: Invalid");
-                }else{
-                    holder.txtStatus.setTextColor(Color.GREEN);
-                    holder.txtStatus.setText("Status: Valid");
+                    holder.txtStatus.setText("Status: rejected");
+                } else {
+                    if (diff > 0) {
+                        holder.txtStatus.setTextColor(Color.RED);
+                        holder.txtStatus.setText("Status: expired");
+
+                    } else {
+                        holder.txtStatus.setText(String.format("Status: %s", appointment.getStatus()));
+                        if (appointment.getStatus().equals("pending approval")) {
+                            holder.txtStatus.setTextColor(Color.rgb(255, 163, 43));
+                            holder.itemView.setOnClickListener(v -> listener.onLongClick(holder.getAbsoluteAdapterPosition()));
+                        } else {
+                            holder.txtStatus.setTextColor(Color.GREEN);
+                        }
+
+
+                    }
                 }
+
             } catch (ParseException e) {
                 throw new RuntimeException(e);
+            } catch (Exception e) {
+                Log.e("ERROR", e.getMessage());
             }
-
+            holder.imgChat.setOnClickListener(v -> listener.onChatClick(holder.getAbsoluteAdapterPosition()));
         }
 
     }
@@ -90,7 +109,7 @@ public class AppointmentDoctorAdapter extends RecyclerView.Adapter<AppointmentDo
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView txtPatientName, txtAppointmentDate,txtStatus;
+        TextView txtPatientName, txtAppointmentDate, txtStatus;
         ImageButton imgChat;
 
         public ViewHolder(@NonNull View itemView) {

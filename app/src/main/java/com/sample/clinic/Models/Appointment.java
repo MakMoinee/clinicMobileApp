@@ -12,6 +12,8 @@ public class Appointment {
     String userID;
     String bookDateTime;
     int notifID;
+    String status;
+    String clientContactNumber;
 
     public Appointment(AppointmentBuilder builder) {
         this.docID = builder.docID;
@@ -20,6 +22,8 @@ public class Appointment {
         this.userID = builder.userID;
         this.bookDateTime = builder.bookDateTime;
         this.notifID = builder.notifID;
+        this.status = builder.status;
+        this.clientContactNumber = builder.clientContactNumber;
     }
 
     public static class AppointmentBuilder {
@@ -29,6 +33,8 @@ public class Appointment {
         String userID;
         String bookDateTime;
         int notifID;
+        String status;
+        String clientContactNumber;
 
 
         public AppointmentBuilder() {
@@ -65,7 +71,17 @@ public class Appointment {
             return this;
         }
 
-        public Appointment build(){
+        public AppointmentBuilder setStatus(String status) {
+            this.status = status;
+            return this;
+        }
+
+        public AppointmentBuilder setClientContactNumber(String clientContactNumber) {
+            this.clientContactNumber = clientContactNumber;
+            return this;
+        }
+
+        public Appointment build() {
             return new Appointment(this);
         }
     }

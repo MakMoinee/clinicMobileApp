@@ -225,10 +225,20 @@ public class LocalFirestore2 {
 
 
     public void addAppointment(Appointment appointment, FireStoreListener listener) {
+        appointment.setStatus("pending approval");
         Map<String, Object> map = Common.getAppointmentMap(appointment);
         db.collection("appointments")
                 .document()
                 .set(map)
+                .addOnSuccessListener(unused -> listener.onSuccess())
+                .addOnFailureListener(e -> listener.onError());
+    }
+
+    public void updateAppointment(Appointment appointment, FireStoreListener listener) {
+        Map<String, Object> map = Common.getAppointmentMap(appointment);
+        db.collection("appointments")
+                .document(appointment.getDocID())
+                .set(map, SetOptions.merge())
                 .addOnSuccessListener(unused -> listener.onSuccess())
                 .addOnFailureListener(e -> listener.onError());
     }
