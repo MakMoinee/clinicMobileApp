@@ -55,6 +55,9 @@ public class MainActivity extends AppCompatActivity implements FragmentFinish {
     private WebView wv;
     private WebSettings ws;
 
+    private static final int REQ_ONE_TAP = 2;  // Can be any integer unique to the Activity.
+    private boolean showOneTapUI = true;
+
     private MainButtonsListener btnListener = new MainButtonsListener() {
         @Override
         public void onNavClick() {
@@ -313,6 +316,11 @@ public class MainActivity extends AppCompatActivity implements FragmentFinish {
     public void onDoctorLogin() {
         Intent intent = new Intent(MainActivity.this, DoctorActivity.class);
         startActivity(intent);
+        finish();
+    }
+
+    @Override
+    public void finishMain() {
         finish();
     }
 }

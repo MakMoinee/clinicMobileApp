@@ -144,5 +144,17 @@
             android:textColor="@color/teal_200"
             android:textSize="18sp" />
 
+        <Button
+            android:id="@+id/btnSignInGoogle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txtForgotPassword"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+            android:fontFamily="@font/roboto_regular"
+            android:padding="10dp"
+            android:text="Sign in with Google"
+            android:textSize="15sp" />
+
     </RelativeLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

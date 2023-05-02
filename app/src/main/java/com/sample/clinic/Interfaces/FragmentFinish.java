@@ -12,4 +12,6 @@ public interface FragmentFinish {
     void onAdminFragment();
 
     void onDoctorLogin();
+
+    void finishMain();
 }

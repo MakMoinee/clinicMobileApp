@@ -30,7 +30,7 @@
             android:exported="true"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.ClinicSystemApp.NoActionBar"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"
             android:windowSoftInputMode="adjustPan|adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -73,26 +73,31 @@
             android:name=".ClientDoctorProfileActivity"
             android:exported="true"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.ClinicSystemApp" />
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
         <activity
             android:name=".ChatActivity"
             android:exported="true"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.ClinicSystemApp" />
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
         <activity
             android:name=".ChatDetailsActivity"
             android:exported="true"
-            android:theme="@style/Theme.ClinicSystemApp" />
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
         <activity
             android:name=".doctor.DoctorActivity"
             android:exported="true"
-            android:theme="@style/Theme.ClinicSystemApp.NoActionBar" />
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
 
         <activity
             android:name=".doctor.DoctorChatActivity"
             android:exported="true"
-            android:theme="@style/Theme.ClinicSystemApp.NoActionBar" />
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
+
+        <activity
+            android:name=".GoogleSignActivity"
+            android:exported="true"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
 
         <receiver
             android:name=".Services.ReminderNotif"

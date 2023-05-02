@@ -23,14 +23,14 @@
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="80dp"
             android:background="#EDEDED"
-            android:visibility="gone"
-            android:padding="16dp">
+            android:padding="16dp"
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/txtLocation"
-                android:layout_centerHorizontal="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
                 android:text="Sample"
                 android:textColor="@android:color/black"
                 android:textSize="15sp" />
@@ -60,6 +60,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
+            android:background="@android:color/white"
             app:menu="@menu/menu_main_form" />
     </RelativeLayout>
 

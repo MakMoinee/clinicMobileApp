@@ -54,13 +54,16 @@ public class LocalFirestoreImpl implements LocalFireStore {
         String hashPass = hash.makeHashPassword(users.getPassword());
         users.setPassword(hashPass);
         Map<String, Object> mapToInsert = Common.toLoginMaps(users);
+        String uuid = db.collection("user")
+                .document().getId();
         db.collection("user")
-                .document()
-                .set(mapToInsert)
+                .document(uuid)
+                .set(mapToInsert, SetOptions.merge())
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
-                        listener.onAddUserSuccess(null);
+                        users.setDocID(uuid);
+                        listener.onAddUserSuccess(users);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

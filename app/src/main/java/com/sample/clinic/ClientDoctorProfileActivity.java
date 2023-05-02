@@ -26,6 +26,7 @@ import com.sample.clinic.Models.Doctor;
 import com.sample.clinic.Models.Users;
 import com.sample.clinic.Preferrences.MyUserPreferrence;
 import com.sample.clinic.Services.LocalFirestore2;
+import com.sample.clinic.Services.LocalMail;
 import com.sample.clinic.databinding.ActivityClientDoctorProfilesBinding;
 import com.sample.clinic.databinding.DialogShowDoctorBinding;
 import com.sample.clinic.databinding.LayoutSearchBinding;
@@ -52,6 +53,7 @@ public class ClientDoctorProfileActivity extends AppCompatActivity {
     DatePickerFragment dpDate;
     TimePickerFragment tpTime;
     List<Doctor> doctorList;
+    LocalMail mail = new LocalMail();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -151,6 +153,7 @@ public class ClientDoctorProfileActivity extends AppCompatActivity {
                                 public void onSuccess() {
                                     alertShowDoctorDetails.dismiss();
                                     Toast.makeText(ClientDoctorProfileActivity.this, "Successfully Created Appointment", Toast.LENGTH_SHORT).show();
+                                    mail.sendEmail(users.getEmail(), "PQ MEDFIND - CREATED APPOINTMENT", String.format("Hi %s,\n You have successfully created an appointment with %s. Dated: %s", users.getFirstName(), selectedDoctor.getDoctorName(), bookDateStr));
                                     finish();
                                 }
 

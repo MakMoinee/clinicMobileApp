@@ -17,10 +17,12 @@ import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.auth.api.identity.BeginSignInRequest;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.sample.clinic.AdminActivity;
 import com.sample.clinic.BuildConfig;
+import com.sample.clinic.GoogleSignActivity;
 import com.sample.clinic.Interfaces.FireStoreListener;
 import com.sample.clinic.Interfaces.FragmentFinish;
 import com.sample.clinic.Models.Users;
@@ -36,7 +38,7 @@ public class SecondFragment extends Fragment {
     private EditText editEmail, editPassword;
     private TextInputEditText editSecret, editPW, editConfirmPW, editForgotEmail;
     private TextInputLayout layoutPW, layoutConfirmPW, layoutSecret;
-    private Button btnSave, txtForgotPassword;
+    private Button btnSave, txtForgotPassword, btnSignInGoogle;
     private FragmentFinish fn;
     private TextView txtCreateAccount;
     private LocalFireStore fs;
@@ -116,6 +118,11 @@ public class SecondFragment extends Fragment {
             mBuilder.setView(tView);
             fpAlertDialog = mBuilder.create();
             fpAlertDialog.show();
+        });
+        btnSignInGoogle.setOnClickListener(v -> {
+            Intent intent = new Intent(mContext, GoogleSignActivity.class);
+            mContext.startActivity(intent);
+            fn.finishMain();
         });
     }
 
@@ -209,6 +216,7 @@ public class SecondFragment extends Fragment {
         editPassword = mView.findViewById(R.id.editPassword);
         txtCreateAccount = mView.findViewById(R.id.txtCreateAccount);
         txtForgotPassword = mView.findViewById(R.id.txtForgotPassword);
+        btnSignInGoogle = mView.findViewById(R.id.btnSignInGoogle);
         fs = new LocalFirestoreImpl(mContext);
         pd = new ProgressDialog(mContext);
         pd.setCancelable(false);

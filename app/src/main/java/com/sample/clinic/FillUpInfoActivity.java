@@ -18,6 +18,7 @@ import com.sample.clinic.Models.Bookings;
 import com.sample.clinic.Models.Users;
 import com.sample.clinic.Preferrences.MyUserPreferrence;
 import com.sample.clinic.Services.LocalFirestore2;
+import com.sample.clinic.Services.LocalMail;
 import com.sample.clinic.Services.ReminderNotif;
 import com.sample.clinic.databinding.ActivityFillUpBinding;
 
@@ -32,6 +33,7 @@ public class FillUpInfoActivity extends AppCompatActivity {
     LocalFirestore2 fs;
     ProgressDialog pd;
     String dateTimeStr = "";
+    LocalMail mail = new LocalMail();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -92,6 +94,7 @@ public class FillUpInfoActivity extends AppCompatActivity {
                     public void onSuccess() {
                         pd.dismiss();
                         showNotifs(bookings.getNotifID(), timeInMilli, String.format("Booked %s at %s", hospitalName, dateTimeStr));
+                        mail.sendEmail(users.getEmail(), "PQ MEDFIND - CREATED BOOK", String.format("Hi %s,\nYou have successfully create a book with the clinic/hospital named: %s, Dated: %s\n\n\n\nThank You So Much For Using PQ MEDFIND", users.getFirstName(), hospitalName, (selectedDate + " " + selectedTime)));
                         Toast.makeText(FillUpInfoActivity.this, "Successfully Added Booking", Toast.LENGTH_SHORT).show();
                         finish();
                     }

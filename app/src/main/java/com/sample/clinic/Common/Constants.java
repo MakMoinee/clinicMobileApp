@@ -20,6 +20,14 @@ public class Constants {
     public static String locationSearch = "";
     public static LatLng selectedLocation;
 
+    public static final String emailHost="smtp.gmail.com";
+    public static final String emailFrom="pqmedfind@gmail.com";
+    public static final String emailPass="pkhgashdvyefnuae";
+    public static final String emailSSL="true";
+    public static final String emailAuth="true";
+    public static final String emailPort="465";
+    public static final String emailClass="javax.net.ssl.SSLSocketFactory";
+
     public static final String photoURL = "https://maps.googleapis.com/maps/api/place/photo";
     //
 //    String data ="{\"api_key\":\""+api_key+"\",\"voc_value\":"+temperature+",\"carbon_value\":"+humidity+"";
