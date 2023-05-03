@@ -54,6 +54,7 @@ public class ClientDoctorProfileActivity extends AppCompatActivity {
     TimePickerFragment tpTime;
     List<Doctor> doctorList;
     LocalMail mail = new LocalMail();
+    Users us2 = new Users();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -148,13 +149,33 @@ public class ClientDoctorProfileActivity extends AppCompatActivity {
                                     .setDoctorID(selectedDoctor.getDocID())
                                     .build();
 
-                            fs.addAppointment(ap, new FireStoreListener() {
+                            fs.getSpecificUser(selectedDoctor.getDocID(), new FireStoreListener() {
                                 @Override
-                                public void onSuccess() {
-                                    alertShowDoctorDetails.dismiss();
-                                    Toast.makeText(ClientDoctorProfileActivity.this, "Successfully Created Appointment", Toast.LENGTH_SHORT).show();
-                                    mail.sendEmail(users.getEmail(), "PQ MEDFIND - CREATED APPOINTMENT", String.format("Hi %s,\n You have successfully created an appointment with %s. Dated: %s", users.getFirstName(), selectedDoctor.getDoctorName(), bookDateStr));
-                                    finish();
+                                public void onAddUserSuccess(Users u) {
+                                    us2 = u;
+                                    if (us2 != null) {
+                                        if (us2.getDocID() != null) {
+                                            fs.addAppointment(ap, new FireStoreListener() {
+                                                @Override
+                                                public void onSuccess() {
+                                                    alertShowDoctorDetails.dismiss();
+                                                    Toast.makeText(ClientDoctorProfileActivity.this, "Successfully Created Appointment", Toast.LENGTH_SHORT).show();
+                                                    mail.sendEmail(users.getEmail(), "PQ MEDFIND - CREATED APPOINTMENT", String.format("Hi %s,\n You have successfully created an appointment with %s. Dated: %s", users.getFirstName(), selectedDoctor.getDoctorName(), bookDateStr));
+                                                    mail.sendEmail(us2.getEmail(), "PQ MEDFIND - CREATED APPOINTMENT", String.format("Hi %s,\n You have received an appointment with %s. Dated: %s\n\nPlease help receive his or her appointment. You can also decline the appointment through the app.\n\n\nThank You", selectedDoctor.getDoctorName(), users.getFirstName(), bookDateStr));
+                                                    finish();
+                                                }
+
+                                                @Override
+                                                public void onError() {
+                                                    Toast.makeText(ClientDoctorProfileActivity.this, "Failed to create appointment", Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                        } else {
+                                            Toast.makeText(ClientDoctorProfileActivity.this, "Failed to create appointment", Toast.LENGTH_SHORT).show();
+                                        }
+                                    } else {
+                                        Toast.makeText(ClientDoctorProfileActivity.this, "Failed to create appointment", Toast.LENGTH_SHORT).show();
+                                    }
                                 }
 
                                 @Override
@@ -162,6 +183,7 @@ public class ClientDoctorProfileActivity extends AppCompatActivity {
                                     Toast.makeText(ClientDoctorProfileActivity.this, "Failed to create appointment", Toast.LENGTH_SHORT).show();
                                 }
                             });
+
                         } catch (Exception e) {
                             Log.e("ERROR_PARSE_DATE", e.getMessage());
                         }

@@ -482,4 +482,24 @@ public class LocalFirestore2 {
                 })
                 .addOnFailureListener(e -> Log.e("ERROR_GET_USERS", e.getMessage()));
     }
+
+    public void getSpecificUser(String docID, FireStoreListener listener) {
+        db.collection("user")
+                .document(docID)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        Users users = documentSnapshot.toObject(Users.class);
+                        if (users != null) {
+                            users.setDocID(documentSnapshot.getId());
+                            listener.onAddUserSuccess(users);
+                        } else {
+                            listener.onError();
+                        }
+                    } else {
+                        listener.onError();
+                    }
+                })
+                .addOnFailureListener(e -> listener.onError());
+    }
 }
