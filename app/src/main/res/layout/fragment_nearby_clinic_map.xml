@@ -15,6 +15,15 @@
             android:layout_height="match_parent"
             android:contentDescription="Map" />
 
+        <Button
+            android:id="@+id/btnChangeCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="3dp"
+            android:text="Change Category"
+            android:textSize="10sp" />
+
         <RelativeLayout
             android:id="@+id/relativePopup"
             android:layout_width="250dp"

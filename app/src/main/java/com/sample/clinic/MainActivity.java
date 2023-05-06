@@ -323,4 +323,13 @@ public class MainActivity extends AppCompatActivity implements FragmentFinish {
     public void finishMain() {
         finish();
     }
+
+    @Override
+    public void reloadNearbyFragment() {
+        fragment = new NearbyClinicMapFragment(MainActivity.this, MainActivity.this, btnListener);
+        fm = getSupportFragmentManager();
+        ft = fm.beginTransaction();
+        ft.replace(R.id.frame, fragment, null);
+        ft.commit();
+    }
 }

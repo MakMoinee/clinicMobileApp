@@ -14,4 +14,6 @@ public interface FragmentFinish {
     void onDoctorLogin();
 
     void finishMain();
+
+    void reloadNearbyFragment();
 }

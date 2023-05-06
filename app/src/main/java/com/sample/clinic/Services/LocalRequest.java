@@ -24,10 +24,10 @@ public class LocalRequest {
         this.mContext = mContext;
     }
 
-    public void getNearbyHospitals(NearPlacesRequest req, LocalRequestListener listener) {
+    public void getNearbyHospitals(NearPlacesRequest req, String keyword, LocalRequestListener listener) {
 
-        String fUrl = String.format(Constants.getHospitalNearMeURL + "?location=%s&keyword=hospitals near me &radius=1500&type=hospital&key=%s", req.getLocation(), Constants.gmapKey);
-
+        String fUrl = String.format(Constants.getHospitalNearMeURL + "?location=%s&keyword=%s&radius=1500&type=hospital&key=%s", req.getLocation(), keyword, Constants.gmapKey);
+        Log.e("fullURL", fUrl);
         StringRequest stringRequest = new StringRequest(Request.Method.GET, fUrl, response -> {
             if (response.equals("")) {
                 listener.onError();

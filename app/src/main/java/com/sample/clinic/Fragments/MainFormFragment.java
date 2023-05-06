@@ -138,7 +138,7 @@ public class MainFormFragment extends Fragment implements StorageListener {
         recyclerView.setAdapter(null);
         NearPlacesRequest req = new NearPlacesRequest();
         req.setLocation(String.format("%s,%s", currentLocation.latitude, currentLocation.longitude));
-        localRequest.getNearbyHospitals(req, new LocalRequestListener() {
+        localRequest.getNearbyHospitals(req, "hospital", new LocalRequestListener() {
             @Override
             public void onSuccess(FullNearPlacesResponse f) {
                 fullNearPlacesResponse = f;
@@ -415,7 +415,7 @@ public class MainFormFragment extends Fragment implements StorageListener {
 
                 NearPlacesRequest req = new NearPlacesRequest();
                 req.setLocation(String.format("%s,%s", currentLocation.latitude, currentLocation.longitude));
-                localRequest.getNearbyHospitals(req, new LocalRequestListener() {
+                localRequest.getNearbyHospitals(req, "hospital", new LocalRequestListener() {
                     @Override
                     public void onSuccess(FullNearPlacesResponse f) {
                         fullNearPlacesResponse = f;
