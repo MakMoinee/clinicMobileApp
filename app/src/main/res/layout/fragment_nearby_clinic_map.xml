@@ -27,11 +27,11 @@
         <RelativeLayout
             android:id="@+id/relativePopup"
             android:layout_width="250dp"
-            android:layout_height="110dp"
+            android:layout_height="100dp"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="80dp"
-            android:background="#EDEDED"
+            android:background="@color/teal_700"
             android:padding="16dp"
             android:visibility="gone">
 
@@ -41,8 +41,18 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:text="Sample"
-                android:textColor="@android:color/black"
+                android:textColor="@android:color/white"
                 android:textSize="15sp" />
+            <TextView
+                android:id="@+id/txtLatLng"
+                android:textColor="@android:color/white"
+                android:layout_marginTop="5dp"
+                android:text="Latitude: , Longitude: "
+                android:textSize="10sp"
+                android:layout_marginLeft="10dp"
+                android:layout_below="@+id/txtLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
 
             <ImageButton
                 android:id="@+id/btnAccept"
@@ -50,6 +60,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_marginLeft="40dp"
+                android:visibility="gone"
                 android:background="@android:color/transparent"
                 android:src="@drawable/ic_check_map" />
 
@@ -60,6 +71,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignParentBottom="true"
                 android:layout_marginRight="40dp"
+                android:visibility="gone"
                 android:background="@android:color/transparent"
                 android:src="@drawable/ic_cancel" />
         </RelativeLayout>

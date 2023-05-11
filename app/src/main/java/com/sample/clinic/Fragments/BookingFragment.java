@@ -26,7 +26,6 @@ import com.sample.clinic.Interfaces.AdapterListener;
 import com.sample.clinic.Interfaces.FireStoreListener;
 import com.sample.clinic.Interfaces.MainButtonsListener;
 import com.sample.clinic.Models.Bookings;
-import com.sample.clinic.Models.NearPlacesResponse;
 import com.sample.clinic.Models.Users;
 import com.sample.clinic.Preferrences.MyUserPreferrence;
 import com.sample.clinic.R;
@@ -152,16 +151,11 @@ public class BookingFragment extends Fragment implements DatePickerDialog.OnDate
 
     private void setValues() {
         fs = new LocalFirestore2(mContext);
-        binding.navBottom.setSelectedItemId(R.id.action_booking);
         binding.navBottom.setOnItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.action_home:
                     mainButtonsListener.onHomeClick();
                     break;
-                case R.id.action_appointment:
-                    mainButtonsListener.onConsultClick();
-                    break;
-
                 case R.id.action_settings:
                     mainButtonsListener.onNavClick();
                     break;
@@ -169,7 +163,6 @@ public class BookingFragment extends Fragment implements DatePickerDialog.OnDate
             }
             return false;
         });
-        binding.navBottom.setSelectedItemId(R.id.action_booking);
 
 
     }

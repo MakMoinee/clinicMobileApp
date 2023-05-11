@@ -38,6 +38,7 @@ import com.google.gson.Gson;
 import com.sample.clinic.Adapters.CategoryAdapter;
 import com.sample.clinic.HospitalDetailActivity;
 import com.sample.clinic.Interfaces.AdapterListener;
+import com.sample.clinic.Interfaces.FireStoreListener;
 import com.sample.clinic.Interfaces.FragmentFinish;
 import com.sample.clinic.Interfaces.LocalRequestListener;
 import com.sample.clinic.Interfaces.MainButtonsListener;
@@ -46,6 +47,7 @@ import com.sample.clinic.Models.FullNearPlacesResponse;
 import com.sample.clinic.Models.NearPlacesRequest;
 import com.sample.clinic.Models.NearPlacesResponse;
 import com.sample.clinic.R;
+import com.sample.clinic.Services.LocalFirestore2;
 import com.sample.clinic.Services.LocalRequest;
 import com.sample.clinic.databinding.DialogCategoryBinding;
 import com.sample.clinic.databinding.FragmentNearbyClinicMapBinding;
@@ -76,6 +78,7 @@ public class NearbyClinicMapFragment extends Fragment {
     LatLng currentLocation, originalLocation;
     Boolean locationPermissionGranted = false;
     LocalRequest localRequest;
+    LocalFirestore2 fs;
     List<LatLng> listOfHospitalLocations = new ArrayList<>();
     List<Marker> markerList = new ArrayList<>();
     List<NearPlacesResponse> hospitalList = new ArrayList<>();
@@ -103,36 +106,38 @@ public class NearbyClinicMapFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentNearbyClinicMapBinding.inflate(inflater, container, false);
         localRequest = new LocalRequest(mContext);
+        fs = new LocalFirestore2(mContext);
         providerClient = LocationServices.getFusedLocationProviderClient(mContext);
         pdLoad = new ProgressDialog(mContext);
         pdLoad.setMessage("Loading Maps ...");
         pdLoad.setCancelable(false);
         getLocationPermission();
         initMap(binding.getRoot());
-        chooseCategory();
+        loadCategories();
+
 
         return binding.getRoot();
+    }
+
+    private void loadCategories() {
+        fs.getCategories(new FireStoreListener() {
+            @Override
+            public void onSuccessCategories(List<Categories> c) {
+                categoriesList = c;
+                chooseCategory();
+            }
+
+            @Override
+            public void onError() {
+                Toast.makeText(mContext, "There are no active categories", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void chooseCategory() {
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(mContext);
         categoryBinding = DialogCategoryBinding.inflate(LayoutInflater.from(mContext), null, false);
         mBuilder.setView(categoryBinding.getRoot());
-        categoriesList = new ArrayList<>();
-        Categories categories = new Categories();
-        categories.setCategory("Pedia Clinic");
-        categories.setCategoryPhotoId(R.drawable.ic_baby);
-        categoriesList.add(categories);
-
-        categories = new Categories();
-        categories.setCategory("Hospital");
-        categories.setCategoryPhotoId(R.drawable.ic_hospital);
-        categoriesList.add(categories);
-
-        categories = new Categories();
-        categories.setCategory("Dental Clinic");
-        categories.setCategoryPhotoId(R.drawable.ic_dental);
-        categoriesList.add(categories);
 
         categoryBinding.btnProceed.setEnabled(false);
         CategoryAdapter adapter = new CategoryAdapter(mContext, categoriesList, new AdapterListener() {
@@ -170,25 +175,6 @@ public class NearbyClinicMapFragment extends Fragment {
     }
 
     private void initListeners() {
-        binding.navBottom.setOnItemSelectedListener(item -> {
-            switch (item.getItemId()) {
-                case R.id.action_home:
-                    break;
-                case R.id.action_booking:
-                    listener.onBookingClick();
-                    return true;
-                case R.id.action_appointment:
-                    listener.onConsultClick();
-                    return true;
-                case R.id.action_settings:
-                    listener.onNavClick();
-                    break;
-                case R.id.action_chat:
-                    listener.onChatClick();
-                    break;
-            }
-            return false;
-        });
         binding.btnAccept.setOnClickListener(v -> {
             if (hospitalList.size() > 0 && selectedPlace != "") {
                 for (NearPlacesResponse placesResponse : hospitalList) {
@@ -213,6 +199,16 @@ public class NearbyClinicMapFragment extends Fragment {
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(googleMap -> gMap = googleMap);
+        binding.navBottom.setOnItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.action_home:
+                    break;
+                case R.id.action_settings:
+                    listener.onNavClick();
+                    return true;
+            }
+            return false;
+        });
     }
 
     private void initValues() {
@@ -373,6 +369,7 @@ public class NearbyClinicMapFragment extends Fragment {
             } else {
                 binding.relativePopup.setVisibility(View.VISIBLE);
                 binding.txtLocation.setText(marker.getTitle());
+                binding.txtLatLng.setText(String.format("Latitude:%s , Longitude:%s ", marker.getPosition().latitude, marker.getPosition().longitude));
                 selectedPlace = marker.getTitle();
             }
 

@@ -18,6 +18,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.sample.clinic.Fragments.AdminHomeFragment;
+import com.sample.clinic.Fragments.CategoriesFragment;
 import com.sample.clinic.Fragments.DoctorProfilesFragment;
 import com.sample.clinic.Interfaces.AdminListener;
 import com.sample.clinic.Interfaces.FireStoreListener;
@@ -76,10 +77,10 @@ public class AdminActivity extends AppCompatActivity implements AdminListener {
                     ft.replace(R.id.fragment, fragment, null);
                     ft.commit();
                     return true;
-                case R.id.action_doctor_profiles:
-                    setTitle("Doctor Profiles");
+                case R.id.action_categories:
+                    setTitle("Categories");
                     fragmentIndex = 1;
-                    fragment = new DoctorProfilesFragment(AdminActivity.this, AdminActivity.this);
+                    fragment = new CategoriesFragment(AdminActivity.this, AdminActivity.this);
                     fm = getSupportFragmentManager();
                     ft = fm.beginTransaction();
                     ft.replace(R.id.fragment, fragment, null);
@@ -119,38 +120,6 @@ public class AdminActivity extends AppCompatActivity implements AdminListener {
 
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu m) {
-        menu = m;
-        switch (fragmentIndex) {
-            case 1:
-                getMenuInflater().inflate(R.menu.menu_search, m);
-                return true;
-            default:
-                if (menu != null) menu.clear();
-                break;
-        }
-        return super.onCreateOptionsMenu(m);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (fragmentIndex == 1) {
-            switch (item.getItemId()) {
-                case R.id.action_search:
-                    AlertDialog.Builder mBuilder = new AlertDialog.Builder(AdminActivity.this);
-                    layoutSearchBinding = LayoutSearchBinding.inflate(getLayoutInflater(), null, false);
-                    setDialogSearchValues();
-                    mBuilder.setView(layoutSearchBinding.getRoot());
-                    alertSearch = mBuilder.create();
-                    alertSearch.show();
-                    return true;
-                default:
-                    break;
-            }
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
     private void setDialogSearchValues() {
         layoutSearchBinding.btnSearch.setOnClickListener(v -> {

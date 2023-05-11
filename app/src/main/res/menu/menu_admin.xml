@@ -9,10 +9,10 @@
         android:title="Home"
         app:showAsAction="always" />
     <item
-        android:id="@+id/action_doctor_profiles"
-        android:icon="@drawable/ic_doctor_profiles"
+        android:id="@+id/action_categories"
+        android:icon="@drawable/ic_category"
         android:orderInCategory="101"
-        android:title="Doctor Profiles"
+        android:title="Categories"
         app:showAsAction="always" />
     <item
         android:id="@+id/action_settings"

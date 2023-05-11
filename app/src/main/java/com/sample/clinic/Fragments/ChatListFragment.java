@@ -148,14 +148,8 @@ public class ChatListFragment extends Fragment {
                 case R.id.action_home:
                     listener.onHomeClick();
                     return true;
-                case R.id.action_booking:
-                    listener.onBookingClick();
-                    return true;
                 case R.id.action_settings:
                     listener.onNavClick();
-                    return true;
-                case R.id.action_appointment:
-                    listener.onConsultClick();
                     return true;
             }
             return false;

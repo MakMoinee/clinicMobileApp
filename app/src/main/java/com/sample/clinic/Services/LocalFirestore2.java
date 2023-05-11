@@ -15,11 +15,13 @@ import com.sample.clinic.Common.Common;
 import com.sample.clinic.Interfaces.FireStoreListener;
 import com.sample.clinic.Models.Appointment;
 import com.sample.clinic.Models.Bookings;
+import com.sample.clinic.Models.Categories;
 import com.sample.clinic.Models.Doctor;
 import com.sample.clinic.Models.Message;
 import com.sample.clinic.Models.Message2;
 import com.sample.clinic.Models.NearPlacesRequest;
 import com.sample.clinic.Models.Users;
+import com.sample.clinic.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -500,6 +502,58 @@ public class LocalFirestore2 {
                         listener.onError();
                     }
                 })
+                .addOnFailureListener(e -> listener.onError());
+    }
+
+    public void getCategories(FireStoreListener listener) {
+        db.collection("categories")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (queryDocumentSnapshots.isEmpty()) {
+                        listener.onError();
+                    } else {
+                        List<Categories> categoriesList = new ArrayList<>();
+                        for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                            if (documentSnapshot.exists()) {
+                                Categories categories = documentSnapshot.toObject(Categories.class);
+                                if (categories != null) {
+                                    categories.setDocID(documentSnapshot.getId());
+                                    categories.setCategoryPhotoId(R.drawable.ic_category);
+                                    categoriesList.add(categories);
+                                }
+                            }
+                        }
+                        if (categoriesList.size() > 0) {
+                            listener.onSuccessCategories(categoriesList);
+                        } else {
+                            listener.onError();
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> listener.onError());
+    }
+
+    public void addCategory(Categories category, FireStoreListener listener) {
+        Map<String, Object> fMap = new HashMap<>();
+        fMap.put("category", category.getCategory());
+        String docID = db.collection("categories")
+                .document().getId();
+
+        db.collection("categories")
+                .document(docID)
+                .set(fMap, SetOptions.merge())
+                .addOnSuccessListener(unused -> listener.onSuccess())
+                .addOnFailureListener(e -> {
+                    listener.onError();
+                });
+
+    }
+
+    public void deleteCategory(Categories category, FireStoreListener listener){
+        db.collection("categories")
+                .document(category.getDocID())
+                .delete()
+                .addOnSuccessListener(unused -> listener.onSuccess())
                 .addOnFailureListener(e -> listener.onError());
     }
 }

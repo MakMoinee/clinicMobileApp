@@ -187,12 +187,6 @@ public class MainFormFragment extends Fragment implements StorageListener {
             switch (item.getItemId()) {
                 case R.id.action_home:
                     break;
-                case R.id.action_booking:
-                    mainBtnListener.onBookingClick();
-                    return true;
-                case R.id.action_appointment:
-                    mainBtnListener.onConsultClick();
-                    return true;
                 case R.id.action_settings:
                     mainBtnListener.onNavClick();
                     break;

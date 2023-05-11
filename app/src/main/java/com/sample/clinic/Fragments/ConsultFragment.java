@@ -55,19 +55,11 @@ public class ConsultFragment extends Fragment {
     private void setValues() {
         fs = new LocalFirestore2(mContext);
         binding.btnRelative.setOnClickListener(v -> mContext.startActivity(new Intent(mContext, ClientDoctorProfileActivity.class)));
-        binding.navBottom.setSelectedItemId(R.id.action_appointment);
+//        binding.navBottom.setSelectedItemId(R.id.action_appointment);
         binding.navBottom.setOnItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.action_home:
                     listener.onHomeClick();
-                    break;
-                case R.id.action_booking:
-                    listener.onBookingClick();
-                    break;
-                case R.id.action_appointment:
-                    return true;
-                case R.id.action_chat:
-                    listener.onChatClick();
                     break;
                 case R.id.action_settings:
                     listener.onNavClick();

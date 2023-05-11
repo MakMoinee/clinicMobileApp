@@ -9,24 +9,6 @@
         android:title="Home"
         app:showAsAction="always" />
     <item
-        android:id="@+id/action_booking"
-        android:icon="@drawable/ic_book"
-        android:orderInCategory="101"
-        android:title="Book"
-        app:showAsAction="always" />
-    <item
-        android:id="@+id/action_appointment"
-        android:icon="@drawable/ic_appointment"
-        android:orderInCategory="102"
-        android:title="Appointments"
-        app:showAsAction="always" />
-    <item
-        android:id="@+id/action_chat"
-        android:icon="@drawable/ic_chat"
-        android:orderInCategory="103"
-        android:title="Chats"
-        app:showAsAction="always" />
-    <item
         android:id="@+id/action_settings"
         android:icon="@drawable/ic_settings"
         android:orderInCategory="104"

@@ -3,6 +3,7 @@ package com.sample.clinic.Interfaces;
 import com.google.firebase.firestore.DocumentReference;
 import com.sample.clinic.Models.Appointment;
 import com.sample.clinic.Models.Bookings;
+import com.sample.clinic.Models.Categories;
 import com.sample.clinic.Models.Doctor;
 import com.sample.clinic.Models.Message2;
 import com.sample.clinic.Models.Users;
@@ -40,6 +41,10 @@ public interface FireStoreListener {
     }
 
     default void onSuccessUsers(List<Users> usersList) {
+
+    }
+
+    default void onSuccessCategories(List<Categories> categoriesList){
 
     }
 
